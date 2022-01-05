@@ -42,7 +42,7 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
             Roles = new List<SelectListItem>
             {
                 new SelectListItem {Value = "Client", Text ="Client"},
-                new SelectListItem {Value = "Techinician", Text = "Techinician"},
+                new SelectListItem {Value = "Manager", Text = "Manager"},
             };
         }
 
