@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220105190323_AnalysisTypeTests")]
+    partial class AnalysisTypeTests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,76 +221,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.AnalysisTests", b =>
-                {
-                    b.Property<int>("AnalysisTestsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TechnicianName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TypeAnalysisTestsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnalysisTestsId");
-
-                    b.HasIndex("TypeAnalysisTestsId");
-
-                    b.ToTable("AnalysisTests");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
-                {
-                    b.Property<int>("ProcedureId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ProcedureDescription")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("TypeAnalysisTestsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProcedureId");
-
-                    b.HasIndex("TypeAnalysisTestsId");
-
-                    b.ToTable("Procedure");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.TypeAnalysisTests", b =>
-                {
-                    b.Property<int>("TypeAnalysisTestsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("TypeAnalysisTestsId");
-
-                    b.ToTable("TypeAnalysisTests");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -338,28 +270,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.AnalysisTests", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.TypeAnalysisTests", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeAnalysisTestsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.TypeAnalysisTests", "typeAnalysisTests")
-                        .WithMany()
-                        .HasForeignKey("TypeAnalysisTestsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("typeAnalysisTests");
                 });
 #pragma warning restore 612, 618
         }

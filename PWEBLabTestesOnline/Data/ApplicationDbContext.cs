@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using PWEBLabTestesOnline.Models;
 
 namespace PWEBLabTestesOnline.Data
 {
@@ -12,5 +13,8 @@ namespace PWEBLabTestesOnline.Data
             : base(options)
         {
         }
+        public DbSet<AnalysisTests> AnalysisTests { get; set; }
+        public DbSet<Procedure> Procedure { get; set; }
+        public DbSet<TypeAnalysisTests> TypeAnalysisTests { get; set; }
     }
 }
