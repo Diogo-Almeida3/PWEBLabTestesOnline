@@ -10,8 +10,8 @@ using PWEBLabTestesOnline.Data;
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220105234302_Users1")]
-    partial class Users1
+    [Migration("20220106180240_phoneLab2")]
+    partial class phoneLab2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -195,9 +195,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("ClientViewModelId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -250,8 +247,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientViewModelId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -263,14 +258,34 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.ClientViewModel", b =>
+            modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("LaboratoriesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("LaboratoriesName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ManagerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("PhoneNumber")
+                        .HasColumnType("int");
 
-                    b.ToTable("ClientViewModel");
+                    b.HasKey("LaboratoriesId");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("Laboratories");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
@@ -374,11 +389,13 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.ApplicationUser", b =>
+            modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
                 {
-                    b.HasOne("PWEBLabTestesOnline.Models.ClientViewModel", null)
-                        .WithMany("Users")
-                        .HasForeignKey("ClientViewModelId");
+                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
@@ -390,11 +407,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("typeAnalysisTests");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.ClientViewModel", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

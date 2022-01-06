@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220106180153_phoneLab")]
+    partial class phoneLab
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,36 +258,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
-                {
-                    b.Property<int>("LaboratoriesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("LaboratoriesName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ManagerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
-
-                    b.HasKey("LaboratoriesId");
-
-                    b.HasIndex("ManagerId");
-
-                    b.ToTable("Laboratories");
-                });
-
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
                 {
                     b.Property<int>("ProcedureId")
@@ -385,15 +357,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Manager")
-                        .WithMany()
-                        .HasForeignKey("ManagerId");
-
-                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Procedure", b =>
