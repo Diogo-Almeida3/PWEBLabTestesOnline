@@ -34,7 +34,7 @@ namespace PWEBLabTestesOnline.Controllers
             return View(clientes.ToList());
         }
 
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -62,7 +62,7 @@ namespace PWEBLabTestesOnline.Controllers
         }
 
         // GET: Procedures/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
