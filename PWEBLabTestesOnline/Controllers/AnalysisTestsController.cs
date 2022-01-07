@@ -20,7 +20,6 @@ namespace PWEBLabTestesOnline.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Techinician")]
         // GET: AnalysisTests
         public async Task<IActionResult> Index()
         {
