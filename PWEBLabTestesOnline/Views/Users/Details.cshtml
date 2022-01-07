@@ -1,0 +1,53 @@
+﻿@model PWEBLabTestesOnline.Models.UsersViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.LastName)
+        </dd class = "col-sm-10">
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd class = "col-sm-10">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.PhoneNumber)
+        </dd class = "col-sm-10">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Laboratories.First().LaboratoriesName)
+        </dt>
+        <dl class="col">
+        @foreach (var lab in @Model.Laboratories)
+        {
+            <dd>
+                @Html.DisplayFor(model => lab.LaboratoriesName)
+            </dd>
+        }
+        </dl>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

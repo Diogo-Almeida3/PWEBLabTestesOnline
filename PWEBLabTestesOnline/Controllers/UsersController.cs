@@ -51,7 +51,7 @@ namespace PWEBLabTestesOnline.Controllers
             return View(usersViewModel);
         }
 
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -79,7 +79,7 @@ namespace PWEBLabTestesOnline.Controllers
         }
 
         // GET: Procedures/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -136,6 +136,27 @@ namespace PWEBLabTestesOnline.Controllers
         private bool UsersExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var userViewModel = new UsersViewModel();
+            var labs = _context.Laboratories;
+
+            userViewModel.ApplicationUser = await _context.Users.FindAsync(id);
+            userViewModel.Laboratories = labs.Where(l => l.ManagerId == id).ToList();
+
+            if (userViewModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(userViewModel);
         }
     }
 }
