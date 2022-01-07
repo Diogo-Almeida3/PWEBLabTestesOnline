@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +13,22 @@ namespace PWEBLabTestesOnline.Controllers
 {
     public class LaboratoriesController : Controller
     {
+        RoleManager<IdentityRole> roleManager;
+        UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
 
-        public LaboratoriesController(ApplicationDbContext context)
+        public LaboratoriesController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext _context)
         {
-            _context = context;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+            this._context = _context;
         }
 
         // GET: Laboratories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Laboratories.ToListAsync());
+            var applicationDbContext = _context.Laboratories.Include(p => p.Manager);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Laboratories/Details/5
@@ -34,6 +40,7 @@ namespace PWEBLabTestesOnline.Controllers
             }
 
             var laboratories = await _context.Laboratories
+                .Include(p => p.Manager)
                 .FirstOrDefaultAsync(m => m.LaboratoriesId == id);
             if (laboratories == null)
             {
@@ -44,8 +51,14 @@ namespace PWEBLabTestesOnline.Controllers
         }
 
         // GET: Laboratories/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").FirstOrDefault();
+            if (RoleManager == null)
+                return NotFound();
+
+            var managers = await userManager.GetUsersInRoleAsync(RoleManager.Name);
+            ViewData["ManagerId"] = new SelectList(managers, "Id", "Email");
             return View();
         }
 
@@ -54,7 +67,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber")] Laboratories laboratories)
+        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId")] Laboratories laboratories)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +75,11 @@ namespace PWEBLabTestesOnline.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").FirstOrDefault();
+            if (RoleManager == null)
+                return NotFound();
+            var managers = await userManager.GetUsersInRoleAsync(RoleManager.Name);
+            ViewData["ManagerId"] = new SelectList(managers, "Id", "Email");
             return View(laboratories);
         }
 
@@ -78,6 +96,11 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 return NotFound();
             }
+            var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").FirstOrDefault();
+            if (RoleManager == null)
+                return NotFound();
+            var managers = await userManager.GetUsersInRoleAsync(RoleManager.Name);
+            ViewData["ManagerId"] = new SelectList(managers, "Id", "Email");
             return View(laboratories);
         }
 
@@ -86,7 +109,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber")] Laboratories laboratories)
+        public async Task<IActionResult> Edit(int id, [Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId")] Laboratories laboratories)
         {
             if (id != laboratories.LaboratoriesId)
             {
@@ -113,6 +136,11 @@ namespace PWEBLabTestesOnline.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").FirstOrDefault();
+            if (RoleManager == null)
+                return NotFound();
+            var managers = await userManager.GetUsersInRoleAsync(RoleManager.Name);
+            ViewData["ManagerId"] = new SelectList(managers, "Id", "Email");
             return View(laboratories);
         }
 
@@ -125,6 +153,7 @@ namespace PWEBLabTestesOnline.Controllers
             }
 
             var laboratories = await _context.Laboratories
+                .Include(m => m.Manager)
                 .FirstOrDefaultAsync(m => m.LaboratoriesId == id);
             if (laboratories == null)
             {
@@ -151,3 +180,5 @@ namespace PWEBLabTestesOnline.Controllers
         }
     }
 }
+
+

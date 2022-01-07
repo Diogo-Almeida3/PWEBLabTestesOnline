@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220106205040_managerId")]
+    partial class managerId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,8 +275,10 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ManagerId")
-                        .IsRequired()
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ManagerId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PhoneNumber")
@@ -282,7 +286,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
 
                     b.HasKey("LaboratoriesId");
 
-                    b.HasIndex("ManagerId");
+                    b.HasIndex("ManagerId1");
 
                     b.ToTable("Laboratories");
                 });
@@ -392,9 +396,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
                 {
                     b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Manager")
                         .WithMany()
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ManagerId1");
 
                     b.Navigation("Manager");
                 });

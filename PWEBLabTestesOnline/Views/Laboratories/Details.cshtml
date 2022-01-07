@@ -28,6 +28,18 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
+        <dt class = "col-sm-2">
+            Manager Name
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Manager.FirstName) @Html.DisplayFor(model => model.Manager.LastName)
+        </dd>
+        <dt class = "col-sm-2">
+            Manager Email
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Manager.Email)
+        </dd>
     </dl>
 </div>
 <div>

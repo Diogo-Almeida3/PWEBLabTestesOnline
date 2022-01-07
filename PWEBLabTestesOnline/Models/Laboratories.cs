@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PWEBLabTestesOnline.Models
 {
@@ -23,9 +24,11 @@ namespace PWEBLabTestesOnline.Models
         [DataType(DataType.PhoneNumber)]
         public int PhoneNumber { get; set; }
 
-
         /* ----- Owner - Manager ----- */
         [Required]
+        [Display(Name = "Manager")]
+        [ForeignKey("ApplicationUser")]
+        public string ManagerId { get; set; }
         public ApplicationUser Manager { get; set;}
 
     }
