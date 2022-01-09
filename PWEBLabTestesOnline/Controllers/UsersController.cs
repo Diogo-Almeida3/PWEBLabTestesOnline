@@ -28,29 +28,38 @@ namespace PWEBLabTestesOnline.Controllers
         {
             var usersViewModel = new List<UsersViewModel>();
 
-            var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").First();
-            var RoleTechinician = roleManager.Roles.Where(r => r.Name == "Techinician").First();
-            if (RoleManager == null || RoleTechinician == null)
-                return NotFound();
+            var RolesManager = roleManager.Roles.Where(r => r.Name == "Manager").First();
+            var RolesTechinician = roleManager.Roles.Where(r => r.Name == "Techinician").First();
+            if (RolesManager == null || RolesTechinician == null)
+                return View(usersViewModel);
 
-            var managers = await userManager.GetUsersInRoleAsync(RoleManager.Name);
-            var techinicians = await userManager.GetUsersInRoleAsync(RoleTechinician.Name);
-            var allUsers = new List<ApplicationUser>();
-            allUsers.AddRange(managers);
-            allUsers.AddRange(techinicians);
+            var managers = await userManager.GetUsersInRoleAsync(RolesManager.Name);
+            var techinicians = await userManager.GetUsersInRoleAsync(RolesTechinician.Name);
             var labs = _context.Laboratories;
 
-            foreach(var user in allUsers)
+            foreach(var user in managers)
             {
                 usersViewModel.Add(new UsersViewModel
                 {
                     ApplicationUser = user,
+                    Role = "Manager",
+                    Laboratories = labs.Where(l => l.ManagerId == user.Id).ToList()
+                });
+            }
+
+            foreach (var user in techinicians)
+            {
+                usersViewModel.Add(new UsersViewModel
+                {
+                    ApplicationUser = user,
+                    Role = "Techinician",
                     Laboratories = labs.Where(l => l.ManagerId == user.Id).ToList()
                 });
             }
             return View(usersViewModel);
         }
 
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -78,6 +87,7 @@ namespace PWEBLabTestesOnline.Controllers
         }
 
         // GET: Procedures/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {

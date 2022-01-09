@@ -35,18 +35,40 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ApplicationUser.PhoneNumber)
         </dd class = "col-sm-10">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Laboratories.First().LaboratoriesName)
-        </dt>
-        <dl class="col">
-        @foreach (var lab in @Model.Laboratories)
-        {
-            <dd>
-                @Html.DisplayFor(model => lab.LaboratoriesName)
-            </dd>
-        }
-        </dl>
     </dl>
+    <br /><br />
+    <h4>User Laboratories</h4>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                Laboratory Name
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Phone Number
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lab in Model.Laboratories) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => lab.LaboratoriesName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => lab.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => lab.PhoneNumber)
+                    </td>
+                </tr>
+}
+    </tbody>
+</table>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>

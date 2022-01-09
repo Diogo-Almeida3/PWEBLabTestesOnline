@@ -1,11 +1,13 @@
 ﻿@model List<UsersViewModel>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+
 <h1>Users List</h1>
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover" id="tableUsers">
     <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
+            <th>Role</th>
             <th>Email</th>
             <th>Laboratory</th>
             <th>Options</th>
@@ -16,8 +18,8 @@
         @foreach (var user in Model)
        {
          <tr>
-            <td>@user.ApplicationUser.FirstName</td>
-            <td>@user.ApplicationUser.LastName</td>
+            <td>@user.ApplicationUser.FirstName @user.ApplicationUser.LastName</td>
+            <td>@user.Role</td>
             <td>@user.ApplicationUser.Email</td>
                 @if(@user.Laboratories.Count>1)
                 {
@@ -37,9 +39,21 @@
                 }
                 
             <td>
+                <a asp-action="Edit" asp-route-id="@user.ApplicationUser.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@user.ApplicationUser.Id">Details</a> |         
                 <a asp-action="Delete" asp-route-id="@user.ApplicationUser.Id">Delete</a>
             </td>
         </tr>
        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script src="jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#tableUsers').DataTable();
+        } );    
+    </script>
+}
