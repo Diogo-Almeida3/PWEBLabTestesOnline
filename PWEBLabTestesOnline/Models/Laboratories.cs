@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PWEBLabTestesOnline.Models
@@ -31,5 +32,7 @@ namespace PWEBLabTestesOnline.Models
         public string ManagerId { get; set; }
         public ApplicationUser Manager { get; set;}
 
+        /* ----- Techinicians ----- */
+        public virtual ICollection<ApplicationUser> Techinicians { get; set; }
     }
 }

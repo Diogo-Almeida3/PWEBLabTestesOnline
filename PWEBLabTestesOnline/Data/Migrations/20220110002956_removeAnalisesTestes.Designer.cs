@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220110002956_removeAnalisesTestes")]
+    partial class removeAnalisesTestes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,9 +178,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LaboratoriesId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -216,8 +215,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LaboratoriesId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -382,13 +379,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.Laboratories", null)
-                        .WithMany("Techinicians")
-                        .HasForeignKey("LaboratoriesId");
-                });
-
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
                 {
                     b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Manager")
@@ -428,11 +418,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Navigation("Laboratory");
 
                     b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
-                {
-                    b.Navigation("Techinicians");
                 });
 #pragma warning restore 612, 618
         }

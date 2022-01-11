@@ -10,37 +10,87 @@
     <h4>Laboratories</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.LaboratoriesName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LaboratoriesName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Location)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Location)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PhoneNumber)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Manager Name
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Manager.FirstName) @Html.DisplayFor(model => model.Manager.LastName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Manager Email
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Manager.Email)
         </dd>
+        <dt class="col-sm-2">
+            Number of Technicians
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Techinicians != null)
+            {
+                <p>0</p>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.Techinicians.Count)
+            }
+        </dd>
     </dl>
+
+    @if (Model.Techinicians != null)
+    {
+        @if (@Model.Techinicians.Count > 0)
+        {
+            <h4>Techinicians</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var tec in Model.Techinicians)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => tec.FirstName) @Html.DisplayFor(modelItem => tec.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => tec.Email)
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    }
+
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.LaboratoriesId">Edit</a> |

@@ -10,7 +10,7 @@
 
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" disabled="disabled"/>
+                <input asp-for="Email" class="form-control" disabled="disabled" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
@@ -24,6 +24,11 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Role</label>
+                <select name="Role" class="form-control" asp-items="ViewBag.Roles"></select>
             </div>
 
             <div class="form-group">
@@ -43,5 +48,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

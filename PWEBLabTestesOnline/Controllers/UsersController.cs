@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace PWEBLabTestesOnline.Controllers
 {
+    [Authorize(Roles = ("Admin"))]
     public class UsersController : Controller
     {
         RoleManager<IdentityRole> roleManager;
@@ -43,7 +45,7 @@ namespace PWEBLabTestesOnline.Controllers
                 {
                     ApplicationUser = user,
                     Role = "Manager",
-                    Laboratories = labs.Where(l => l.ManagerId == user.Id).ToList()
+                    Laboratories = labs.Where(l => l.ManagerId == user.Id || l.Techinicians.Contains(user)).ToList()
                 });
             }
 
@@ -53,7 +55,7 @@ namespace PWEBLabTestesOnline.Controllers
                 {
                     ApplicationUser = user,
                     Role = "Techinician",
-                    Laboratories = labs.Where(l => l.ManagerId == user.Id).ToList()
+                    Laboratories = labs.Where(l => l.ManagerId == user.Id || l.Techinicians.Contains(user)).ToList()
                 });
             }
             return View(usersViewModel);
@@ -99,6 +101,9 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 return NotFound();
             }
+            var roleName = await userManager.GetRolesAsync(user);
+            var role = await _context.Roles.Where(r => r.Name == roleName.FirstOrDefault()).FirstOrDefaultAsync();
+            ViewData["Roles"] = new SelectList(roleManager.Roles.ToList(), "Id", "Name", role.Id);
             return View(user);
         }
 
@@ -107,7 +112,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, ApplicationUser user)
+        public async Task<IActionResult> Edit(string id, ApplicationUser user, string Role)
         {
             if (id != user.Id)
             {
@@ -117,11 +122,22 @@ namespace PWEBLabTestesOnline.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {       
                     var user2update = await _context.Users.FindAsync(id);
                     user2update.FirstName = user.FirstName;
                     user2update.LastName = user.LastName;
                     user2update.PhoneNumber = user.PhoneNumber;
+
+                    var AllRolesUser = await userManager.GetRolesAsync(user2update);
+                    var roleUser = await _context.Roles.Where(r => r.Name == AllRolesUser.FirstOrDefault()).FirstOrDefaultAsync();
+
+                    var newRole = _context.Roles.Where(r => r.Id == Role).FirstOrDefault();
+                    if (Role != roleUser.Id)
+                    {
+                        await userManager.RemoveFromRoleAsync(user2update, roleUser.Name);
+                        await userManager.AddToRoleAsync(user2update, newRole.Name);
+                    }
+
                     _context.Update(user2update);
                     await _context.SaveChangesAsync();
                 }

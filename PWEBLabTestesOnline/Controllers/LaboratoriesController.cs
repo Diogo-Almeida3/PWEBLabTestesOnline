@@ -53,6 +53,7 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 var laboratories = await _context.Laboratories
                 .Include(p => p.Manager)
+                .Include(p => p.Techinicians)
                 .FirstOrDefaultAsync(m => m.LaboratoriesId == id);
                 return View(laboratories);
             } 
@@ -134,15 +135,20 @@ namespace PWEBLabTestesOnline.Controllers
                 return NotFound();
             }
 
+            //ViewData["Techinicians"] = new MultiSelectList(AllClients, "Id", "Email");
             if (User.IsInRole("Admin"))
             {
+                //Get lab
                 var laboratories = await _context.Laboratories
                 .Include(p => p.Manager)
+                .Include(p => p.Techinicians)
                 .FirstOrDefaultAsync(m => m.LaboratoriesId == id);
                 if (laboratories == null)
                 {
                     return NotFound();
                 }
+
+                // Get managers users
                 var RoleManager = roleManager.Roles.Where(r => r.Name == "Manager").FirstOrDefault();
                 if (RoleManager == null)
                     return NotFound();
@@ -157,6 +163,7 @@ namespace PWEBLabTestesOnline.Controllers
                     var laboratories = _context.Laboratories
                                         .Where(lab => lab.ManagerId == userManager.GetUserId(User) && lab.LaboratoriesId == id)
                                         .Include(p => p.Manager)
+                                        .Include(p => p.Techinicians)
                                         .First();
                     return View(laboratories);
                 }
@@ -288,6 +295,108 @@ namespace PWEBLabTestesOnline.Controllers
         private bool LaboratoriesExists(int id)
         {
             return _context.Laboratories.Any(e => e.LaboratoriesId == id);
+        }
+
+        // GET
+        public IActionResult Techinicians(int id)
+        {
+            if (!LaboratoriesExists(id))
+            {
+                return NotFound();
+            }
+            return View(id);
+        }
+
+        // POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Techinicians(int id, string email,string action)
+        {
+            if (!LaboratoriesExists(id))
+            {
+                return NotFound();
+            }
+
+            var laboratory = _context.Laboratories.Include(m => m.Techinicians).First(lab => lab.LaboratoriesId == id);
+            ApplicationUser user2action = null;
+            
+            try
+            {
+                user2action = _context.Users.First(u => u.Email == email);
+            } catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = "Could not find a user with this email address";
+                return View(id);
+            }
+
+            
+            if (user2action == null)
+            {
+                ViewData["ErrorMessage"] = "Could not find a user with this email address";
+                return View(id);
+            }
+
+
+            if (User.IsInRole("Admin"))
+            {
+                if(action == "Add") // Adiciona técnico a um laboratório
+                {
+                    await userManager.RemoveFromRoleAsync(user2action, "Client");
+                    await userManager.AddToRoleAsync(user2action, "Techinician");
+                    laboratory.Techinicians.Add(user2action);
+                }
+                else // Remove técnico de um laboratório
+                {              
+                    if(!laboratory.Techinicians.Remove(user2action))
+                    {
+                        ViewData["ErrorMessage"] = "Unable to remove this technician or a technician with this email address could not be found";
+                        return View(id);
+                    }
+                    await userManager.RemoveFromRoleAsync(user2action, "Techinician");
+                    await userManager.AddToRoleAsync(user2action, "Client");
+                }        
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Edit), new { id = id });
+            }
+            else
+            {
+                var currentUser = await userManager.GetUserAsync(User);
+                if (currentUser.Id == laboratory.ManagerId) // Este utilizador é o manager deste laboratório, por isso pode editar
+                {
+                    if (action == "Add") // Pertende adicionar um novo técnico
+                    {
+                        var Clients = await userManager.GetUsersInRoleAsync("Client");
+                        if (Clients.First(c => c.Id == user2action.Id) != null)// Este utilizador é um cliente, por isso pode ser adicionado
+                        {
+                            await userManager.RemoveFromRoleAsync(user2action, "Client");
+                            await userManager.AddToRoleAsync(user2action, "Techinician");
+                            laboratory.Techinicians.Add(user2action);
+                        }
+                        else // Mensagem de erro para informar utilizador
+                        {
+                            ViewData["ErrorMessage"] = "It is not possible to add this user because he is already a technician in a laboratory";
+                            return View(id);
+                        }        
+                    }
+                    else // Pertende remover um técnico
+                    {
+                        if (!laboratory.Techinicians.Remove(user2action))
+                        {
+                            ViewData["ErrorMessage"] = "Unable to remove this technician or a technician with this email address could not be found";
+                            return View(id);
+                        }
+                        await userManager.RemoveFromRoleAsync(user2action, "Techinician");
+                        await userManager.AddToRoleAsync(user2action, "Client");
+                    }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Edit), new { id = id });
+                }
+                else
+                {
+                    return NotFound("You don't have permissions to do this");
+                }
+            }
+            return RedirectToAction(nameof(Edit), new { id = id });
         }
     }
 }

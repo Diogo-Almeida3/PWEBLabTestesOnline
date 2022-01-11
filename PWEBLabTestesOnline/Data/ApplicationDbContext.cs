@@ -13,10 +13,9 @@ namespace PWEBLabTestesOnline.Data
             : base(options)
         {
         }
-        public DbSet<AnalysisTests> AnalysisTests { get; set; }
         public DbSet<Procedure> Procedure { get; set; }
-        public DbSet<TypeAnalysisTests> TypeAnalysisTests { get; set; }
         public DbSet<Laboratories> Laboratories { get; set;}
+        public DbSet<TypeAnalysisTests> TypeAnalysisTests { get; set; }
         public DbSet<Vacancies> Vacancies { get; set; }
     }
 }
