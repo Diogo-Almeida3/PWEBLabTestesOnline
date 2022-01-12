@@ -182,5 +182,27 @@ namespace PWEBLabTestesOnline.Controllers
 
             return View(userViewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activate(string IdUser)
+        {
+            var user = await _context.Users.FindAsync(IdUser);
+            user.EmailConfirmed = true;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deactivate(string IdUser)
+        {
+            var user = await _context.Users.FindAsync(IdUser);
+            user.EmailConfirmed = false;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

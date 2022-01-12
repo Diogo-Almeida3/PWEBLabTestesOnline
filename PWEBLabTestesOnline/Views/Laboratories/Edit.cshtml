@@ -11,7 +11,14 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if(ViewBag.ScheduleError == null)
+            {
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            }
+            else
+            {
+                 <div class="text-danger">@ViewBag.ScheduleError</div>
+            }
             <input type="hidden" asp-for="LaboratoriesId" />
             <div class="form-group">
                 <label asp-for="LaboratoriesName" class="control-label"></label>
@@ -29,6 +36,17 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="Opening" class="control-label"></label>
+                <input asp-for="Opening" class="form-control" />
+                <span asp-validation-for="Opening" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Enclosure" class="control-label"></label>
+                <input asp-for="Enclosure" class="form-control" />
+                <span asp-validation-for="Enclosure" class="text-danger"></span>
+            </div>
+
             @if (User.IsInRole("Admin"))
             {
                 <div class="form-group">
@@ -42,7 +60,7 @@
                 <br />
                 <a asp-action="Techinicians" asp-route-id="@Model.LaboratoriesId" class="btn btn-sm btn-secondary">Edit Techinicians</a>
                 <br /><br />
-                @if (Model.Techinicians != null)
+                @if (Model.Techinicians != null && Model.Techinicians.Count > 0)
                 {
                     <table class="table">
                         <thead>

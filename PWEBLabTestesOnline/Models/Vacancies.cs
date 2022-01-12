@@ -28,11 +28,13 @@ namespace PWEBLabTestesOnline.Models
         public int DailyLimit { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Time)]
         public DateTime Opening { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Time)]
         public DateTime Enclosure { get; set; }
+
+        //TODO: Colocar duração do teste
     }
 }

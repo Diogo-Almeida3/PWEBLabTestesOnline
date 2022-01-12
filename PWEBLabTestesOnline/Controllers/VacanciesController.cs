@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +12,24 @@ using PWEBLabTestesOnline.Models;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
+    [Authorize(Roles = ("Manager"))]
     public class VacanciesController : Controller
     {
+        RoleManager<IdentityRole> roleManager;
+        UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
 
-        public VacanciesController(ApplicationDbContext context)
+        public VacanciesController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext _context)
         {
-            _context = context;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+            this._context = _context;
         }
 
         // GET: Vacancies
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Vacancies.Include(v => v.Laboratory).Include(v => v.Type);
+            var applicationDbContext = _context.Vacancies.Include(v => v.Laboratory).Include(v => v.Type).Where(l => l.Laboratory.ManagerId == userManager.GetUserId(User));
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,6 +44,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             var vacancies = await _context.Vacancies
                 .Include(v => v.Laboratory)
                 .Include(v => v.Type)
+                .Where(l => l.Laboratory.ManagerId == userManager.GetUserId(User))
                 .FirstOrDefaultAsync(m => m.VacanciesId == id);
             if (vacancies == null)
             {
@@ -49,8 +57,8 @@ namespace PWEBLabTestesOnline.Data.Migrations
         // GET: Vacancies/Create
         public IActionResult Create()
         {
-            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName");
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name");
+            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToList(), "LaboratoriesId", "LaboratoriesName");
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToList(), "TypeAnalysisTestsId", "Name");
             return View();
         }
 
@@ -61,14 +69,17 @@ namespace PWEBLabTestesOnline.Data.Migrations
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure")] Vacancies vacancies)
         {
+            if (vacancies.Laboratory.ManagerId == userManager.GetUserId(User)) ModelState.AddModelError("Laboratory", "This laboratory is not run by this user");
+            if (vacancies.Type.CreatedById == userManager.GetUserId(User)) ModelState.AddModelError("Type", "This type of test does not belong to this user");
+
             if (ModelState.IsValid)
             {
                 _context.Add(vacancies);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName", vacancies.LaboratoryId);
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name", vacancies.TypeAnalysisTestsId);
+            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToList(), "LaboratoriesId", "LaboratoriesName");
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToList(), "TypeAnalysisTestsId", "Name");
             return View(vacancies);
         }
 

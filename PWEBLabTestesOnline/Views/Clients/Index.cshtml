@@ -7,6 +7,7 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th>Activated</th>
             <th>Phone Number</th>
             <th>Options</th>
         </tr>
@@ -19,9 +20,25 @@
             <td>@utilizador.FirstName</td>
             <td>@utilizador.LastName</td>
             <td>@utilizador.Email</td>
+            <td>@utilizador.EmailConfirmed</td>
             <td>@utilizador.PhoneNumber</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@utilizador.Id">Edit</a> |
+                @if (!utilizador.EmailConfirmed)
+                    {
+                        <form asp-action="Activate">
+                            <input type="hidden" name="IdUser" value="@utilizador.Id"/>
+                            <a href="#" onclick=this.closest('form').submit()>Activate</a>
+                        </form>
+                        
+                    }
+                    else
+                    {
+                        <form asp-action="Deactivate">
+                            <input type="hidden" name="IdUser" value="@utilizador.Id"/>
+                            <a href="#" onclick=this.closest('form').submit()>Deactivate</a>
+                        </form>
+                    }|
                 <a asp-action="Delete" asp-route-id="@utilizador.Id">Delete</a>
             </td>
         </tr>

@@ -21,33 +21,40 @@
             <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
-            <th>
-                Manager Email
-            </th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>
+                    Manager Email
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LaboratoriesName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Manager.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.LaboratoriesId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LaboratoriesId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LaboratoriesId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LaboratoriesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Manager.Email)
+                    </td>
+                }
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.LaboratoriesId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.LaboratoriesId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.LaboratoriesId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

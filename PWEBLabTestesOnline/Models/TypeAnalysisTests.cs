@@ -14,11 +14,9 @@ namespace PWEBLabTestesOnline.Models
         [Display(Name = "Type Name")]
         public string Name { get; set; }
 
-        //[Required]
-        //[Display(Name = "Laboratory")]
-        //[ForeignKey("Laboratories")]
-        //public int LaboratoryId { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public string CreatedById { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
 
-        //public Laboratories Laboratory { get; set; }
     }
 }

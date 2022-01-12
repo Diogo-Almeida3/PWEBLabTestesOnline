@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220111223142_dailyHoursLabs")]
+    partial class dailyHoursLabs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,17 +298,12 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("TypeAnalysisTestsId");
-
-                    b.HasIndex("CreatedById");
 
                     b.ToTable("TypeAnalysisTests");
                 });
@@ -420,15 +417,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("typeAnalysisTests");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.TypeAnalysisTests", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Vacancies", b =>

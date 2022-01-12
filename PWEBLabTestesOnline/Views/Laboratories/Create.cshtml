@@ -1,17 +1,20 @@
 ﻿@model PWEBLabTestesOnline.Models.Laboratories
 
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h1>Create</h1>
 
 <h4>Laboratories</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if(ViewBag.ScheduleError == null)
+            {
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            }
+            else
+            {
+                 <div class="text-danger">@ViewBag.ScheduleError</div>
+            }
+            
             <div class="form-group">
                 <label asp-for="LaboratoriesName" class="control-label"></label>
                 <input asp-for="LaboratoriesName" class="form-control" />
@@ -27,13 +30,25 @@
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
-            @if (User.IsInRole("Admin"))
+            <div class="form-group">
+                <label asp-for="Opening" class="control-label"></label>
+                <input asp-for="Opening" class="form-control" />
+                <span asp-validation-for="Opening" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Enclosure" class="control-label"></label>
+                <input asp-for="Enclosure" class="form-control" />
+                <span asp-validation-for="Enclosure" class="text-danger"></span>
+            </div>
+
+             @if (User.IsInRole("Admin"))
             {
                 <div class="form-group">
                     <label asp-for="ManagerId" class="control-label"></label>
                     <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagerId"></select>
                 </div>
             }
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -46,7 +61,5 @@
 </div>
 
 @section Scripts {
-    @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

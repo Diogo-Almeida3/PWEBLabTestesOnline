@@ -97,11 +97,19 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId")] Laboratories laboratories)
+        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId,Opening,Enclosure")] Laboratories laboratories)
         {
             if (User.IsInRole("Admin"))
             {
-                if (ModelState.IsValid)
+                ModelState.MaxAllowedErrors = 2;
+
+                if (laboratories.Opening > laboratories.Enclosure)
+                {
+                    ViewData["ScheduleError"] = "The opening time is longer than the closing date";
+                    ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                }
+
+                if (!ModelState.HasReachedMaxErrors)
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();
@@ -117,7 +125,15 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 laboratories.Manager = await userManager.GetUserAsync(User);
                 laboratories.ManagerId = laboratories.Manager.Id;
-                if (ModelState.ErrorCount <= 1)
+                ModelState.MaxAllowedErrors = 2;
+
+                if (laboratories.Opening > laboratories.Enclosure)
+                {
+                    ViewData["ScheduleError"] = "The opening time is longer than the closing date";
+                    ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                }
+
+                if (!ModelState.HasReachedMaxErrors)
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();
@@ -181,7 +197,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId")] Laboratories laboratories)
+        public async Task<IActionResult> Edit(int id, [Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId,Opening,Enclosure")] Laboratories laboratories)
         {
             if (id != laboratories.LaboratoriesId)
             {
@@ -190,7 +206,15 @@ namespace PWEBLabTestesOnline.Controllers
 
             if(User.IsInRole("Admin"))
             {
-                if (ModelState.IsValid)
+                ModelState.MaxAllowedErrors = 2;
+
+                if (laboratories.Opening > laboratories.Enclosure)
+                {
+                    ViewData["ScheduleError"] = "The opening time is longer than the closing date";
+                    ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                }
+
+                if (!ModelState.HasReachedMaxErrors)
                 {
                     try
                     {
@@ -219,7 +243,15 @@ namespace PWEBLabTestesOnline.Controllers
             }
             else
             {
-                if (ModelState.ErrorCount<=1)
+                ModelState.MaxAllowedErrors = 2;
+
+                if (laboratories.Opening > laboratories.Enclosure)
+                {
+                    ViewData["ScheduleError"] = "The opening time is longer than the closing date";
+                    ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                }
+
+                if (!ModelState.HasReachedMaxErrors)
                 {
                     try
                     {
@@ -240,10 +272,10 @@ namespace PWEBLabTestesOnline.Controllers
                         }
                     }
                     return RedirectToAction(nameof(Index));
-                }
+                }   
                 return View(laboratories);
             }
-            
+
         }
 
         // GET: Laboratories/Delete/5

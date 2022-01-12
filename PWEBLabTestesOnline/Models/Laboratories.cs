@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,6 +25,14 @@ namespace PWEBLabTestesOnline.Models
         [Display(Name = "Phone Number")]
         [DataType(DataType.PhoneNumber)]
         public int PhoneNumber { get; set; }
+
+        [Required]
+        [DataType(DataType.Time)]
+        public DateTime Opening { get; set; }
+
+        [Required]
+        [DataType(DataType.Time)]
+        public DateTime Enclosure { get; set; }
 
         /* ----- Owner - Manager ----- */
         [Required]
