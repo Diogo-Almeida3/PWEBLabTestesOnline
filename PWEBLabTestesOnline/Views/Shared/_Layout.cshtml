@@ -65,6 +65,13 @@
                         @if(User.IsInRole("Client"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Schedules" asp-action="Index">My Tests</a>
+                            </li> 
+                        }
+
+                        @if(User.IsInRole("Client"))
+                        {
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Schedules" asp-action="Create">Schedule Test</a>
                             </li> 
                         }

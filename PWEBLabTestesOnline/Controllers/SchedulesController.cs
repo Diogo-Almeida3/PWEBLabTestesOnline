@@ -26,17 +26,33 @@ namespace PWEBLabTestesOnline.Controllers
         }
 
         // GET: Schedules
-        [Authorize(Roles = ("Techinician"))]
+        [Authorize(Roles = ("Techinician,Client"))]
         public async Task<IActionResult> Index()
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            var applicationDbContext = _context.Schedules
-                .Include(s => s.Client)
-                .Include(s => s.Laboratory)
-                .Include(s => s.Techinician)
-                .Include(s => s.TestType)
-                .Where(s => s.Laboratory.Techinicians.Contains(currentUser));
-            return View(await applicationDbContext.ToListAsync());
+            if(User.IsInRole("Techinician"))
+            {
+                var currentUser = await userManager.GetUserAsync(User);
+                var applicationDbContext = _context.Schedules
+                    .Include(s => s.Client)
+                    .Include(s => s.Laboratory)
+                    .Include(s => s.Techinician)
+                    .Include(s => s.TestType)
+                    .Where(s => s.Laboratory.Techinicians.Contains(currentUser))
+                    .OrderByDescending(s => s.AppointmentTime);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var currentUser = await userManager.GetUserAsync(User);
+                var applicationDbContext = _context.Schedules
+                    .Include(s => s.Client)
+                    .Include(s => s.Laboratory)
+                    .Include(s => s.Techinician)
+                    .Include(s => s.TestType)
+                    .Where(s => s.ClientId == currentUser.Id)
+                    .OrderByDescending(s => s.AppointmentTime);
+                return View(await applicationDbContext.ToListAsync());
+            }
         }
 
         // GET: Schedules/Details/5
@@ -85,7 +101,7 @@ namespace PWEBLabTestesOnline.Controllers
             if (lab_tests.Count > 1 && lab_tests[1] == "Create") // Se carregou no botão create
             {
                 var vacancy = await _context.Vacancies.Where(v => v.TypeAnalysisTestsId == schedules.TestTypeId).FirstOrDefaultAsync();
-                //TODO: verificar esta validação
+
                 if (DateTime.Now > schedules.AppointmentTime)
                     ModelState.AddModelError("AppointmentTime", "You must enter a schedule date that is greater than the current date and time");
 

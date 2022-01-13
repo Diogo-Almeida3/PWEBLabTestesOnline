@@ -244,8 +244,7 @@ namespace PWEBLabTestesOnline.Controllers
 
                 if (laboratories.Opening > laboratories.Enclosure)
                 {
-                    ViewData["ScheduleError"] = "The opening time is longer than the closing date";
-                    ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                    ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
                 if (!ModelState.HasReachedMaxErrors)

@@ -24,60 +24,76 @@
             <th>
                 @Html.DisplayNameFor(model => model.TestType)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Client)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Techinician)
-            </th>
+            @if (User.IsInRole("Techinician"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Client)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Techinician)
+                </th>
+            }
 
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentTime)
-            </td>
-            <td>
-                @if(item.Result != null)
-                {  
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentTime)
+                </td>
+                <td>
+                    @if (item.Result != null)
+                    {
                         @Html.DisplayFor(modelItem => item.Result)
                     }
                     else
                     {
                         <label>Pending</label>
                     }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TestType.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Client.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Techinician.Email)
-                @if (item.Techinician == null)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TestType.Name)
+                </td>
+                @if (User.IsInRole("Techinician"))
                 {
-                    <form asp-action="Responsible">
-                        <input type="hidden" name="SchedulesId" value="@item.SchedulesId"/>
-                        <a href="#" onclick=this.closest('form').submit()>Responsible</a>
-                    </form>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.Email)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Techinician.Email)
+                        @if (item.Techinician == null)
+                        {
+                            <form asp-action="Responsible">
+                                <input type="hidden" name="SchedulesId" value="@item.SchedulesId" />
+                                <a href="#" onclick=this.closest('form').submit()>Responsible</a>
+                            </form>
+                        }
+                    </td>
                 }
-            </td>
-            <td>
-                   @if(item.Techinician != null && item.Techinician.Email == User.Identity.Name && item.Result == null)
+                <td>
+                    @if (User.IsInRole("Techinician"))
                     {
-                        <label><a asp-action="Edit" asp-route-id="@item.SchedulesId">Edit</a> |</label>
+                        @if (item.Techinician != null && item.Techinician.Email == User.Identity.Name && item.Result == null)
+                        {
+                            <label><a asp-action="Edit" asp-route-id="@item.SchedulesId">Edit</a> |</label>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
+                    }      
+                    else if((item.AppointmentTime.Subtract(DateTime.Now)).TotalHours > 24)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.SchedulesId">Cancel</a>
                     }
-                    
-                <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
-            </td>
-        </tr>
-}
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
