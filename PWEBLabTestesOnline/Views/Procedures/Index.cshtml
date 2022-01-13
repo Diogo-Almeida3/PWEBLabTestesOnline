@@ -9,15 +9,25 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="ListByType" method="get" class="form-inline">
+    <b>Filter by test type: </b>
+
+    <select name="TypeAnalysisTestsId" onchange="submit()" class="form-control" asp-items="ViewBag.TypeAnalysisTestsId">
+        <option value="0">All tests</option>
+    </select>
+
+</form>
+<br />
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProcedureDescription)
+                @Html.DisplayNameFor(model => model.TypeAnalysisTestsId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.typeAnalysisTests)
-            </th>
+                @Html.DisplayNameFor(model => model.ProcedureDescription)
+            </th> 
             <th></th>
         </tr>
     </thead>
@@ -25,14 +35,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProcedureDescription)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.typeAnalysisTests.Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.ProcedureDescription)
+            </td> 
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.ProcedureId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProcedureId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ProcedureId">Delete</a>
             </td>
         </tr>

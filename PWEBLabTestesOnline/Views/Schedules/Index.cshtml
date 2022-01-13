@@ -1,0 +1,83 @@
+﻿@model IEnumerable<PWEBLabTestesOnline.Models.Schedules>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Result)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Laboratory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TestType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Techinician)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentTime)
+            </td>
+            <td>
+                @if(item.Result != null)
+                {  
+                        @Html.DisplayFor(modelItem => item.Result)
+                    }
+                    else
+                    {
+                        <label>Pending</label>
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TestType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Techinician.Email)
+                @if (item.Techinician == null)
+                {
+                    <form asp-action="Responsible">
+                        <input type="hidden" name="SchedulesId" value="@item.SchedulesId"/>
+                        <a href="#" onclick=this.closest('form').submit()>Responsible</a>
+                    </form>
+                }
+            </td>
+            <td>
+                   @if(item.Techinician != null && item.Techinician.Email == User.Identity.Name && item.Result == null)
+                    {
+                        <label><a asp-action="Edit" asp-route-id="@item.SchedulesId">Edit</a> |</label>
+                    }
+                    
+                <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

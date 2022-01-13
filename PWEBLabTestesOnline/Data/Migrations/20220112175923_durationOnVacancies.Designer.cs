@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PWEBLabTestesOnline.Data;
 
 namespace PWEBLabTestesOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220112175923_durationOnVacancies")]
+    partial class durationOnVacancies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,47 +291,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.ToTable("Procedure");
                 });
 
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Schedules", b =>
-                {
-                    b.Property<int>("SchedulesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("AppointmentTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LaboratoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Result")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TechinicianId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TestTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SchedulesId");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("LaboratoryId");
-
-                    b.HasIndex("TechinicianId");
-
-                    b.HasIndex("TestTypeId");
-
-                    b.ToTable("Schedules");
-                });
-
             modelBuilder.Entity("PWEBLabTestesOnline.Models.TypeAnalysisTests", b =>
                 {
                     b.Property<int>("TypeAnalysisTestsId")
@@ -464,37 +425,6 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("typeAnalysisTests");
-                });
-
-            modelBuilder.Entity("PWEBLabTestesOnline.Models.Schedules", b =>
-                {
-                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
-                    b.HasOne("PWEBLabTestesOnline.Models.Laboratories", "Laboratory")
-                        .WithMany()
-                        .HasForeignKey("LaboratoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Techinician")
-                        .WithMany()
-                        .HasForeignKey("TechinicianId");
-
-                    b.HasOne("PWEBLabTestesOnline.Models.TypeAnalysisTests", "TestType")
-                        .WithMany()
-                        .HasForeignKey("TestTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Laboratory");
-
-                    b.Navigation("Techinician");
-
-                    b.Navigation("TestType");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.TypeAnalysisTests", b =>

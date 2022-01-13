@@ -67,12 +67,25 @@ namespace PWEBLabTestesOnline.Data.Migrations
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure")] Vacancies vacancies)
+        public async Task<IActionResult> Create([Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration")] Vacancies vacancies)
         {
-            if (vacancies.Laboratory.ManagerId == userManager.GetUserId(User)) ModelState.AddModelError("Laboratory", "This laboratory is not run by this user");
-            if (vacancies.Type.CreatedById == userManager.GetUserId(User)) ModelState.AddModelError("Type", "This type of test does not belong to this user");
+            ModelState.MaxAllowedErrors = 1;
+            var lab = _context.Laboratories.FirstOrDefault(l => l.LaboratoriesId == vacancies.LaboratoryId);
+            var typeTest = _context.TypeAnalysisTests.FirstOrDefault(t => t.TypeAnalysisTestsId == vacancies.TypeAnalysisTestsId);
+            // Validação se pode gerir este laboratório e se criou este tipo de teste
+            if (!(lab.ManagerId == userManager.GetUserId(User))) ModelState.AddModelError("Laboratory", "This laboratory is not run by this user");
+            if (!(typeTest.CreatedById == userManager.GetUserId(User))) ModelState.AddModelError("Type", "This type of test does not belong to this user");
 
-            if (ModelState.IsValid)
+            // Verifica se o horário de teste está dentro do horário de funcionamento do laboratório
+            if (!(vacancies.Opening >= lab.Opening && vacancies.Opening <= lab.Enclosure) 
+                || !(vacancies.Enclosure >= lab.Opening && vacancies.Enclosure <= lab.Enclosure) 
+                || vacancies.Enclosure < vacancies.Opening)
+            {
+                ViewData["ScheduleError"] = "Choose a valid time between " + lab.Opening.ToShortTimeString() + " and " + lab.Enclosure.ToShortTimeString() + "  and the opening time must be less than the closing time";
+                ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+            }       
+
+            if (!ModelState.HasReachedMaxErrors)
             {
                 _context.Add(vacancies);
                 await _context.SaveChangesAsync();
@@ -106,7 +119,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure")] Vacancies vacancies)
+        public async Task<IActionResult> Edit(int id, [Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration")] Vacancies vacancies)
         {
             if (id != vacancies.VacanciesId)
             {

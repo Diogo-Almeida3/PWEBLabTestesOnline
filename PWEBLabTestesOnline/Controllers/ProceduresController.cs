@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,43 +13,30 @@ namespace PWEBLabTestesOnline.Controllers
 {
     public class ProceduresController : Controller
     {
+        RoleManager<IdentityRole> roleManager;
+        UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
 
-        public ProceduresController(ApplicationDbContext context)
+        public ProceduresController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext _context)
         {
-            _context = context;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+            this._context = _context;
         }
 
         // GET: Procedures
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Procedure.Include(p => p.typeAnalysisTests);
+            var currentUser = await userManager.GetUserAsync(User);
+            var applicationDbContext = _context.Procedure.Include(p => p.typeAnalysisTests).Where(p => p.typeAnalysisTests.CreatedById == userManager.GetUserId(User));
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>().Where(t => t.CreatedById == currentUser.Id).ToList(), "TypeAnalysisTestsId", "Name");
             return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Procedures/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var procedure = await _context.Procedure
-                .Include(p => p.typeAnalysisTests)
-                .FirstOrDefaultAsync(m => m.ProcedureId == id);
-            if (procedure == null)
-            {
-                return NotFound();
-            }
-
-            return View(procedure);
         }
 
         // GET: Procedures/Create
         public IActionResult Create()
         {
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>(), "TypeAnalysisTestsId", "Name");
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>().Where(p => p.CreatedById == userManager.GetUserId(User)), "TypeAnalysisTestsId", "Name");
             return View();
         }
 
@@ -59,13 +47,14 @@ namespace PWEBLabTestesOnline.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProcedureId,ProcedureDescription,TypeAnalysisTestsId")] Procedure procedure)
         {
-            if (ModelState.IsValid)
+            var typeOfTest = _context.TypeAnalysisTests.Where(p => p.CreatedById == userManager.GetUserId(User)).FirstOrDefault(t => t.TypeAnalysisTestsId == procedure.TypeAnalysisTestsId);
+            if (ModelState.IsValid && typeOfTest != null)
             {
                 _context.Add(procedure);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>(), "TypeAnalysisTestsId", "Name", procedure.TypeAnalysisTestsId);
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>().Where(p => p.CreatedById == userManager.GetUserId(User)), "TypeAnalysisTestsId", "Name");
             return View(procedure);
         }
 
@@ -77,12 +66,13 @@ namespace PWEBLabTestesOnline.Controllers
                 return NotFound();
             }
 
-            var procedure = await _context.Procedure.FindAsync(id);
+            var procedure = _context.Procedure.Where(p => p.ProcedureId == id && 
+                                                            p.typeAnalysisTests.CreatedById == userManager.GetUserId(User)).FirstOrDefault();
             if (procedure == null)
             {
                 return NotFound();
             }
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>(), "TypeAnalysisTestsId", "Name", procedure.TypeAnalysisTestsId);
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>().Where(p => p.CreatedById == userManager.GetUserId(User)), "TypeAnalysisTestsId", "Name");
             return View(procedure);
         }
 
@@ -155,6 +145,24 @@ namespace PWEBLabTestesOnline.Controllers
         private bool ProcedureExists(int id)
         {
             return _context.Procedure.Any(e => e.ProcedureId == id);
+        }
+        //Aqui é como se fosse produtos -> Categorias || Procedimentos -> Testes
+
+        public async Task<IActionResult> ListByType(int TypeAnalysisTestsId)
+        {
+            List<Procedure> listTypes = null;
+            if(TypeAnalysisTestsId == 0)
+            {
+                listTypes = _context.Procedure.Include(p => p.typeAnalysisTests).Where(p => p.typeAnalysisTests.CreatedById == userManager.GetUserId(User)).ToList();
+            }
+            else
+            {
+                listTypes = _context.Procedure.Include(p => p.typeAnalysisTests).Where(p => p.TypeAnalysisTestsId == TypeAnalysisTestsId).ToList();
+
+            }
+            var currentUser = await userManager.GetUserAsync(User);
+            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.Set<TypeAnalysisTests>().Where(t => t.CreatedById == currentUser.Id), "TypeAnalysisTestsId", "Name", TypeAnalysisTestsId);
+            return View("Index", listTypes);
         }
     }
 }

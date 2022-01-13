@@ -17,5 +17,6 @@ namespace PWEBLabTestesOnline.Data
         public DbSet<Laboratories> Laboratories { get; set;}
         public DbSet<TypeAnalysisTests> TypeAnalysisTests { get; set; }
         public DbSet<Vacancies> Vacancies { get; set; }
+        public DbSet<Schedules> Schedules { get; set; }
     }
 }

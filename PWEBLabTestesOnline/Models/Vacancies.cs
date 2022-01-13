@@ -35,6 +35,11 @@ namespace PWEBLabTestesOnline.Models
         [DataType(DataType.Time)]
         public DateTime Enclosure { get; set; }
 
-        //TODO: Colocar duração do teste
+        
+        [Required]
+        [DataType(DataType.Text)]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than 1")]
+        [Display(Name = "Duration in minutes")]
+        public int Duration { get; set; } 
     }
 }

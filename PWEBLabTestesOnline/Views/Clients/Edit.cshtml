@@ -27,6 +27,11 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label">Role</label>
+                <select name="Role" class="form-control" asp-items="ViewBag.Roles"></select>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PWEBLabTestesOnline.Models
 {
@@ -16,7 +17,7 @@ namespace PWEBLabTestesOnline.Models
         /* ----- TypeAnalysisTests ----- */
         //Each procedure corresponds to a analysis or test
         [Required]
-        [Display(Name = "Type")]
+        [Display(Name = "Type of Test")]
         public int TypeAnalysisTestsId { get; set; }
         
         public TypeAnalysisTests typeAnalysisTests { get; set; }

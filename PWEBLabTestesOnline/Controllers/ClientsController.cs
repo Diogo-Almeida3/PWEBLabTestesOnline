@@ -36,32 +36,7 @@ namespace PWEBLabTestesOnline.Controllers
             return View(clientes.ToList());
         }
 
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -98,6 +73,10 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 return NotFound();
             }
+
+            var roleName = await userManager.GetRolesAsync(user);
+            var role = await _context.Roles.Where(r => r.Name == roleName.FirstOrDefault()).FirstOrDefaultAsync();
+            ViewData["Roles"] = new SelectList(roleManager.Roles.ToList(), "Id", "Name", role.Id);
             return View(user);
         }
 
@@ -106,7 +85,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, ApplicationUser user)
+        public async Task<IActionResult> Edit(string id, ApplicationUser user, string Role)
         {
             if (id != user.Id)
             {
@@ -121,6 +100,19 @@ namespace PWEBLabTestesOnline.Controllers
                     user2update.FirstName = user.FirstName;
                     user2update.LastName = user.LastName;
                     user2update.PhoneNumber = user.PhoneNumber;
+
+                    var AllRolesUser = await userManager.GetRolesAsync(user2update);
+                    var roleUser = await _context.Roles.Where(r => r.Name == AllRolesUser.FirstOrDefault()).FirstOrDefaultAsync();
+
+                    var newRole = _context.Roles.Where(r => r.Id == Role).FirstOrDefault();
+                    if (Role != roleUser.Id)
+                    {
+                        await userManager.RemoveFromRoleAsync(user2update, roleUser.Name);
+                        await userManager.AddToRoleAsync(user2update, newRole.Name);
+                    }
+
+
+
                     _context.Update(user2update);
                     await _context.SaveChangesAsync();
                 }
