@@ -44,11 +44,11 @@ namespace PWEBLabTestesOnline.Models
         public string TechinicianId { get; set; }
         public ApplicationUser Techinician { get; set; }
 
-        //Checklist que foi atualizada
+        //Checklist que foi utilizada
         [ForeignKey("Checklist")]
         [Display(Name = "Checklist")]
-        public int ChecklistId { get; set; }
-        public Checklist Checklist { get; set; }
+        public int CurrentChecklistId { get; set; }
+        public Checklist CurrentChecklist { get; set; }
     }
 
     public enum TestResult

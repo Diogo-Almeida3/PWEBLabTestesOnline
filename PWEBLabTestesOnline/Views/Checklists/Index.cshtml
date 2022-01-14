@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PWEBLabTestesOnline.Models.Procedure>
+﻿@model IEnumerable<PWEBLabTestesOnline.Models.Checklist>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProcedureDescription)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th></th>
         </tr>
@@ -22,10 +22,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProcedureDescription)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Delete" asp-route-id="@item.ProcedureId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ChecklistId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ChecklistId">Details</a>
             </td>
         </tr>
 }

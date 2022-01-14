@@ -37,6 +37,7 @@ namespace PWEBLabTestesOnline.Controllers
                     .Include(s => s.Laboratory)
                     .Include(s => s.Techinician)
                     .Include(s => s.TestType)
+                    .Include(s => s.CurrentChecklist)
                     .Where(s => s.Laboratory.Techinicians.Contains(currentUser))
                     .OrderByDescending(s => s.AppointmentTime);
                 return View(await applicationDbContext.ToListAsync());
@@ -49,6 +50,7 @@ namespace PWEBLabTestesOnline.Controllers
                     .Include(s => s.Laboratory)
                     .Include(s => s.Techinician)
                     .Include(s => s.TestType)
+                    .Include(s => s.CurrentChecklist)
                     .Where(s => s.ClientId == currentUser.Id)
                     .OrderByDescending(s => s.AppointmentTime);
                 return View(await applicationDbContext.ToListAsync());
@@ -94,13 +96,13 @@ namespace PWEBLabTestesOnline.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ("Client"))]
-        public async Task<IActionResult> Create([Bind("SchedulesId,AppointmentTime,LaboratoryId,TestTypeId")] Schedules schedules,List<string> lab_tests)
+        public async Task<IActionResult> Create([Bind("SchedulesId,AppointmentTime,LaboratoryId,TestTypeId,CurrentChecklistId")] Schedules schedules,List<string> lab_tests)
         {
             schedules.LaboratoryId = int.Parse(lab_tests[0]);
             
             if (lab_tests.Count > 1 && lab_tests[1] == "Create") // Se carregou no botão create
             {
-                var vacancy = await _context.Vacancies.Where(v => v.TypeAnalysisTestsId == schedules.TestTypeId).FirstOrDefaultAsync();
+                var vacancy = await _context.Vacancies.Include(v => v.CurrentChecklist).Where(v => v.TypeAnalysisTestsId == schedules.TestTypeId && schedules.LaboratoryId == v.LaboratoryId).FirstOrDefaultAsync();
 
                 if (DateTime.Now > schedules.AppointmentTime)
                     ModelState.AddModelError("AppointmentTime", "You must enter a schedule date that is greater than the current date and time");
@@ -112,10 +114,9 @@ namespace PWEBLabTestesOnline.Controllers
                 if (DailyLimit >= vacancy.DailyLimit)
                     ModelState.AddModelError("DailyLimit", "There are no more vacancies for today");
 
-                ModelState.MaxAllowedErrors = 1;
-
-                if (!ModelState.HasReachedMaxErrors && ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
+                    schedules.CurrentChecklist = vacancy.CurrentChecklist;
                     // Adicionar restantes valores
                     var currentUser = await userManager.GetUserAsync(User);
                     schedules.Client = currentUser;
@@ -160,6 +161,8 @@ namespace PWEBLabTestesOnline.Controllers
                 .Include(s => s.Laboratory)
                 .Include(s => s.Techinician)
                 .Include(s => s.TestType)
+                .Include(s => s.CurrentChecklist)
+                .Include(s => s.CurrentChecklist.Procedures)
                 .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
                 .FirstOrDefaultAsync(m => m.SchedulesId == id);
 
@@ -167,7 +170,7 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 return NotFound();
             }
-            ViewData["checklist"] = await _context.Procedure.Where(p => p.TypeAnalysisTestsId == schedules.TestTypeId).ToListAsync();
+            //ViewData["checklist"] = await _context.Procedure.Where(p => p.TypeAnalysisTestsId == schedules.TestTypeId).ToListAsync();
             return View(schedules);
         }
 
@@ -188,31 +191,30 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 try
                 {
-                    var currentUser = await userManager.GetUserAsync(User);
-                    var schedulesUpdate = await _context.Schedules
-                        .Include(s => s.Client)
-                        .Include(s => s.Laboratory)
-                        .Include(s => s.Techinician)
-                        .Include(s => s.TestType)
-                        .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
-                        .FirstOrDefaultAsync(m => m.SchedulesId == id);
+                    
+                        var currentUser = await userManager.GetUserAsync(User);
+                        var schedulesUpdate = await _context.Schedules
+                            .Include(s => s.Client)
+                            .Include(s => s.Laboratory)
+                            .Include(s => s.Techinician)
+                            .Include(s => s.TestType)
+                            .Include(s => s.CurrentChecklist)
+                            .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
+                            .FirstOrDefaultAsync(m => m.SchedulesId == id);
 
-                    if(schedulesUpdate == null)
-                    {
-                        return NotFound();
-                    }
+                        if (schedulesUpdate == null)
+                        {
+                            return NotFound();
+                        }
 
-                    if (schedules.Result == TestResult.Other)             
-                        schedulesUpdate.Description = schedules.Description;
+                        if (schedules.Result == TestResult.Other)
+                            schedulesUpdate.Description = schedules.Description;
+
+                        schedulesUpdate.Result = schedules.Result;
+                        _context.Update(schedulesUpdate);
+                        await _context.SaveChangesAsync();
                     
 
-                    schedulesUpdate.Result = schedules.Result;
-
-                    
-                         
-                    
-                    _context.Update(schedulesUpdate);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -248,6 +250,7 @@ namespace PWEBLabTestesOnline.Controllers
                 .Include(s => s.Laboratory)
                 .Include(s => s.Techinician)
                 .Include(s => s.TestType)
+                .Include(s => s.CurrentChecklist)
                 .Where(s => s.ClientId == currentUser.Id)
                 .FirstOrDefaultAsync(m => m.SchedulesId == id);
             if (schedules == null)
@@ -295,6 +298,7 @@ namespace PWEBLabTestesOnline.Controllers
                 .Include(s => s.Laboratory)
                 .Include(s => s.Techinician)
                 .Include(s => s.TestType)
+                .Include(s => s.CurrentChecklist)
                 .Where(s => s.Laboratory.Techinicians.Contains(currentUser))
                 .FirstOrDefaultAsync(s => s.SchedulesId == SchedulesId);
 

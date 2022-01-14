@@ -44,6 +44,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             var vacancies = await _context.Vacancies
                 .Include(v => v.Laboratory)
                 .Include(v => v.Type)
+                .Include(v => v.CurrentChecklist)
                 .Where(l => l.Laboratory.ManagerId == userManager.GetUserId(User))
                 .FirstOrDefaultAsync(m => m.VacanciesId == id);
             if (vacancies == null)
@@ -55,10 +56,12 @@ namespace PWEBLabTestesOnline.Data.Migrations
         }
 
         // GET: Vacancies/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToList(), "LaboratoriesId", "LaboratoriesName");
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToList(), "TypeAnalysisTestsId", "Name");
+            var currentUser = await userManager.GetUserAsync(User);
+            ViewData["LaboratoryId"] = new SelectList(await _context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToListAsync(), "LaboratoriesId", "LaboratoriesName");
+            ViewData["TypeAnalysisTestsId"] = new SelectList(await _context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToListAsync(), "TypeAnalysisTestsId", "Name");
+            ViewData["CurrentChecklistId"] = new SelectList(await _context.Checklist.Where(c => c.CreatedById == currentUser.Id).ToListAsync(), "ChecklistId", "Name");
             return View();
         }
 
@@ -67,25 +70,25 @@ namespace PWEBLabTestesOnline.Data.Migrations
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration")] Vacancies vacancies)
+        public async Task<IActionResult> Create([Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration,CurrentChecklistId")] Vacancies vacancies)
         {
-            ModelState.MaxAllowedErrors = 1;
             var lab = _context.Laboratories.FirstOrDefault(l => l.LaboratoriesId == vacancies.LaboratoryId);
             var typeTest = _context.TypeAnalysisTests.FirstOrDefault(t => t.TypeAnalysisTestsId == vacancies.TypeAnalysisTestsId);
+            var checkList = _context.Checklist.FirstOrDefault(t => t.ChecklistId == vacancies.CurrentChecklistId);
             // Validação se pode gerir este laboratório e se criou este tipo de teste
             if (!(lab.ManagerId == userManager.GetUserId(User))) ModelState.AddModelError("Laboratory", "This laboratory is not run by this user");
             if (!(typeTest.CreatedById == userManager.GetUserId(User))) ModelState.AddModelError("Type", "This type of test does not belong to this user");
+            if (!(checkList.CreatedById == userManager.GetUserId(User))) ModelState.AddModelError("ChekList", "This checklist does not belong to this user");
 
             // Verifica se o horário de teste está dentro do horário de funcionamento do laboratório
-            if (!(vacancies.Opening >= lab.Opening && vacancies.Opening <= lab.Enclosure) 
-                || !(vacancies.Enclosure >= lab.Opening && vacancies.Enclosure <= lab.Enclosure) 
-                || vacancies.Enclosure < vacancies.Opening)
+            if (!(vacancies.Opening.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Opening.TimeOfDay <= lab.Enclosure.TimeOfDay) 
+                || !(vacancies.Enclosure.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Enclosure.TimeOfDay <= lab.Enclosure.TimeOfDay) 
+                || vacancies.Enclosure.TimeOfDay < vacancies.Opening.TimeOfDay)
             {
-                ViewData["ScheduleError"] = "Choose a valid time between " + lab.Opening.ToShortTimeString() + " and " + lab.Enclosure.ToShortTimeString() + "  and the opening time must be less than the closing time";
-                ModelState.AddModelError("Schedule", "The opening time is longer than the closing date");
+                ModelState.AddModelError("Opening", "Choose a valid time between " + lab.Opening.ToShortTimeString() + " and " + lab.Enclosure.ToShortTimeString() + "  and the opening time must be less than the closing time");
             }       
 
-            if (!ModelState.HasReachedMaxErrors)
+            if (ModelState.IsValid)
             {
                 _context.Add(vacancies);
                 await _context.SaveChangesAsync();
@@ -93,6 +96,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             }
             ViewData["LaboratoryId"] = new SelectList(_context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToList(), "LaboratoriesId", "LaboratoriesName");
             ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToList(), "TypeAnalysisTestsId", "Name");
+            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist.Where(a => a.CreatedById == userManager.GetUserId(User)).ToList(), "ChecklistId", "Name");
             return View(vacancies);
         }
 
@@ -111,6 +115,8 @@ namespace PWEBLabTestesOnline.Data.Migrations
             }
             ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName", vacancies.LaboratoryId);
             ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name", vacancies.TypeAnalysisTestsId);
+
+            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist, "CurrentChecklistId", "Name", vacancies.CurrentChecklistId);
             return View(vacancies);
         }
 
@@ -119,7 +125,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration")] Vacancies vacancies)
+        public async Task<IActionResult> Edit(int id, [Bind("VacanciesId,LaboratoryId,TypeAnalysisTestsId,DailyLimit,Opening,Enclosure,Duration,CurrentChecklistId")] Vacancies vacancies)
         {
             if (id != vacancies.VacanciesId)
             {
@@ -148,6 +154,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             }
             ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName", vacancies.LaboratoryId);
             ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name", vacancies.TypeAnalysisTestsId);
+            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist, "CurrentChecklistId", "Name", vacancies.CurrentChecklistId);
             return View(vacancies);
         }
 
@@ -162,6 +169,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             var vacancies = await _context.Vacancies
                 .Include(v => v.Laboratory)
                 .Include(v => v.Type)
+                .Include(v => v.CurrentChecklist)
                 .FirstOrDefaultAsync(m => m.VacanciesId == id);
             if (vacancies == null)
             {

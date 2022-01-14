@@ -28,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.TestType)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentChecklist)
+            </th>
             @if (User.IsInRole("Techinician"))
             {
                 <th>
@@ -70,6 +73,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TestType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
                 </td>
                 @if (User.IsInRole("Techinician"))
                 {

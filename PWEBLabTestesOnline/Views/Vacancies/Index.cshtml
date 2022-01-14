@@ -21,6 +21,9 @@
                 @Html.DisplayNameFor(model => model.Type)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.CurrentChecklist)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.DailyLimit)
             </th>
             <th>
@@ -43,6 +46,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Type.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DailyLimit)

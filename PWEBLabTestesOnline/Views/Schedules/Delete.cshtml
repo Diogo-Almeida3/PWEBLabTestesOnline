@@ -39,9 +39,17 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TestType)
         </dt>
+
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TestType.Name)
-        </dd class>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrentChecklist)
+        </dt>
+
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CurrentChecklist.Name)
+        </dd>
     </dl>
     
     <form asp-action="Delete">

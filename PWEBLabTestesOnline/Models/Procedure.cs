@@ -14,12 +14,8 @@ namespace PWEBLabTestesOnline.Models
         [Display(Name = "Description")]
         public string ProcedureDescription { get; set; }
 
-        ///* ----- TypeAnalysisTests ----- */
-        ////Each procedure corresponds to a analysis or test
-        //[Required]
-        //[Display(Name = "Type of Test")]
-        //public int TypeAnalysisTestsId { get; set; }
-        
-        //public TypeAnalysisTests typeAnalysisTests { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public string CreatedById { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
     }
 }

@@ -22,7 +22,13 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Type.Name)
-        </dd class>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrentChecklist)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CurrentChecklist.Name)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DailyLimit)
         </dt>

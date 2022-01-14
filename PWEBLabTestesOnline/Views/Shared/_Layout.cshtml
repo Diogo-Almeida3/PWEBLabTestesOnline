@@ -62,6 +62,13 @@
                             </li> 
                         }
 
+                        @if(User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Checklists" asp-action="Index">Checklists</a>
+                            </li> 
+                        }
+
                         @if(User.IsInRole("Client"))
                         {
                             <li class="nav-item">

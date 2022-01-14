@@ -237,12 +237,17 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ChecklistId");
+
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Checklist");
                 });
@@ -294,19 +299,19 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Property<int?>("ChecklistId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ProcedureDescription")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("TypeAnalysisTestsId")
-                        .HasColumnType("int");
-
                     b.HasKey("ProcedureId");
 
                     b.HasIndex("ChecklistId");
 
-                    b.HasIndex("TypeAnalysisTestsId");
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Procedure");
                 });
@@ -321,11 +326,11 @@ namespace PWEBLabTestesOnline.Data.Migrations
                     b.Property<DateTime>("AppointmentTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ClientId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CurrentChecklistId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -345,9 +350,9 @@ namespace PWEBLabTestesOnline.Data.Migrations
 
                     b.HasKey("SchedulesId");
 
-                    b.HasIndex("ChecklistId");
-
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("CurrentChecklistId");
 
                     b.HasIndex("LaboratoryId");
 
@@ -477,6 +482,15 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .HasForeignKey("LaboratoriesId");
                 });
 
+            modelBuilder.Entity("PWEBLabTestesOnline.Models.Checklist", b =>
+                {
+                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.Navigation("CreatedBy");
+                });
+
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Laboratories", b =>
                 {
                     b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Manager")
@@ -494,26 +508,24 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .WithMany("Procedures")
                         .HasForeignKey("ChecklistId");
 
-                    b.HasOne("PWEBLabTestesOnline.Models.TypeAnalysisTests", "typeAnalysisTests")
+                    b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("TypeAnalysisTestsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.Navigation("typeAnalysisTests");
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("PWEBLabTestesOnline.Models.Schedules", b =>
                 {
-                    b.HasOne("PWEBLabTestesOnline.Models.Checklist", "Checklist")
-                        .WithMany()
-                        .HasForeignKey("ChecklistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PWEBLabTestesOnline.Models.ApplicationUser", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
+
+                    b.HasOne("PWEBLabTestesOnline.Models.Checklist", "CurrentChecklist")
+                        .WithMany()
+                        .HasForeignKey("CurrentChecklistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PWEBLabTestesOnline.Models.Laboratories", "Laboratory")
                         .WithMany()
@@ -531,9 +543,9 @@ namespace PWEBLabTestesOnline.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Checklist");
-
                     b.Navigation("Client");
+
+                    b.Navigation("CurrentChecklist");
 
                     b.Navigation("Laboratory");
 
