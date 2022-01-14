@@ -21,7 +21,14 @@
             @Html.DisplayNameFor(model => model.Result)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Result)
+            @if(Model.Result == null)
+            {
+                <label>Pending</label>
+            }
+            else
+            {
+              @Html.DisplayFor(model => model.Result)  
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Laboratory)
@@ -34,18 +41,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TestType.Name)
-        </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Client)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Client.Id)
-        </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Techinician)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Techinician.Id)
         </dd class>
     </dl>
     

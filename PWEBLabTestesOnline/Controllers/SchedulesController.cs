@@ -160,14 +160,14 @@ namespace PWEBLabTestesOnline.Controllers
                 .Include(s => s.Laboratory)
                 .Include(s => s.Techinician)
                 .Include(s => s.TestType)
-                .Where(s => s.Laboratory.Techinicians.Contains(currentUser))
+                .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
                 .FirstOrDefaultAsync(m => m.SchedulesId == id);
 
             if (schedules == null)
             {
                 return NotFound();
             }
-
+            ViewData["checklist"] = await _context.Procedure.Where(p => p.TypeAnalysisTestsId == schedules.TestTypeId).ToListAsync();
             return View(schedules);
         }
 
@@ -177,18 +177,41 @@ namespace PWEBLabTestesOnline.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ("Techinician"))]
-        public async Task<IActionResult> Edit(int id, [Bind("SchedulesId,Result,TechinicianId")] Schedules schedules)
+        public async Task<IActionResult> Edit(int id,Schedules schedules)
         {
             if (id != schedules.SchedulesId)
             {
                 return NotFound();
             }
-
+            // TODO: fazer proteção de técnico responsável
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(schedules);
+                    var currentUser = await userManager.GetUserAsync(User);
+                    var schedulesUpdate = await _context.Schedules
+                        .Include(s => s.Client)
+                        .Include(s => s.Laboratory)
+                        .Include(s => s.Techinician)
+                        .Include(s => s.TestType)
+                        .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
+                        .FirstOrDefaultAsync(m => m.SchedulesId == id);
+
+                    if(schedulesUpdate == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (schedules.Result == TestResult.Other)             
+                        schedulesUpdate.Description = schedules.Description;
+                    
+
+                    schedulesUpdate.Result = schedules.Result;
+
+                    
+                         
+                    
+                    _context.Update(schedulesUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -219,12 +242,13 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 return NotFound();
             }
-
+            var currentUser = await userManager.GetUserAsync(User);
             var schedules = await _context.Schedules
                 .Include(s => s.Client)
                 .Include(s => s.Laboratory)
                 .Include(s => s.Techinician)
                 .Include(s => s.TestType)
+                .Where(s => s.ClientId == currentUser.Id)
                 .FirstOrDefaultAsync(m => m.SchedulesId == id);
             if (schedules == null)
             {
@@ -240,10 +264,18 @@ namespace PWEBLabTestesOnline.Controllers
         [Authorize(Roles = ("Client"))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var schedules = await _context.Schedules.FindAsync(id);
-            _context.Schedules.Remove(schedules);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var currentUser = await userManager.GetUserAsync(User);    
+            var schedules = await _context.Schedules.Where(s => s.ClientId == currentUser.Id && s.SchedulesId == id).FirstAsync();
+            if (schedules == null)
+                return NotFound();
+
+            if (schedules.AppointmentTime.Subtract(DateTime.Now).TotalHours > 24)
+            {
+                _context.Schedules.Remove(schedules);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
         }
 
         private bool SchedulesExists(int id)

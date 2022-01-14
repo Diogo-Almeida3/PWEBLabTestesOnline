@@ -4,9 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>@Model.Laboratory.LaboratoriesName</h1>
 
-<h4>Schedules</h4>
+<h4></h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,35 +19,41 @@
             </div>
             <div class="form-group">
                 <label asp-for="Result" class="control-label"></label>
-                <select id="ResultSelectList" asp-for="Result" onchange="refreshResultInput()" asp-items="Html.GetEnumSelectList<TestResult>()"  class="form-control"></select>
+                <select id="ResultSelectList" asp-for="Result" onchange="refreshResultInput()" asp-items="Html.GetEnumSelectList<TestResult>()" class="form-control"></select>
                 <span asp-validation-for="Result" class="text-danger"></span>
             </div>
             @*============= Hiden =============*@
             <div class="form-group" id="other_input" style="display: none">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class ="form-control" />
+                <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             @*=================================*@
             <div class="form-group">
-                <label asp-for="LaboratoryId" class="control-label"></label>
-                <input asp-for="Laboratory.LaboratoriesName" class="form-control" asp-items="Laboratory.LaboratoriesName" disabled/> 
-            </div>
-            <div class="form-group">
                 <label asp-for="TestTypeId" class="control-label"></label>
-                <input asp-for="TestType.Name" class="form-control" asp-items="TestType.Name" disabled/>
+                <input asp-for="TestType.Name" class="form-control" asp-items="TestType.Name" disabled />
             </div>
             <div class="form-group">
                 <label class="control-label">Client</label>
-                <input asp-for="Client.Email" class="form-control" asp-items="Client.Email" disabled/>
+                <input asp-for="Client.Email" class="form-control" asp-items="Client.Email" disabled />
             </div>
-            <div class="form-group">
-                <label class="control-label">Techinician</label>
-                <input asp-for="Techinician.Email" class="form-control" asp-items="Techinician.Email" disabled/>
-            </div>
+
+
+            @* ================================================= CheckList ==========================================================*@
+            <hr />
+            @foreach (var item in ViewBag.checklist)
+            {
+                <div>
+                    <input type="checkbox" name="ck_procedures" value="@item.ProcedureId" />
+                    <label>@item.ProcedureDescription</label>
+                </div>
+            }
+            <hr />
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
         </form>
     </div>
 </div>
@@ -57,15 +63,17 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 
-    <script>
-        function refreshResultInput() {
-           if( document.getElementById("ResultSelectList").value == 3 ) {
-                document.getElementById("other_input").style = "display: block";
-           }
-           else 
-                document.getElementById("other_input").style = "display: none";
-        }
-    </script>
+<script>
+    function refreshResultInput() {
+       if( document.getElementById("ResultSelectList").value == 3 ) {
+            document.getElementById("other_input").style = "display: block";
+       }
+       else
+            document.getElementById("other_input").style = "display: none";
+    }
+</script>
 }

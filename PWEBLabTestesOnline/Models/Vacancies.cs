@@ -40,6 +40,11 @@ namespace PWEBLabTestesOnline.Models
         [DataType(DataType.Text)]
         [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than 1")]
         [Display(Name = "Duration in minutes")]
-        public int Duration { get; set; } 
+        public int Duration { get; set; }
+
+        [Required]
+        [ForeignKey("Checklist")]
+        public int CurrentChecklistId { get; set; }
+        public Checklist CurrentChecklist { get; set; }
     }
 }

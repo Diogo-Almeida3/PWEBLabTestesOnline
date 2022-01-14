@@ -15,6 +15,7 @@ namespace PWEBLabTestesOnline.Models
         public Nullable<TestResult> Result { get; set; }
 
         [DataType(DataType.Text)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Description { get; set; }
 
         [Required]
@@ -42,6 +43,12 @@ namespace PWEBLabTestesOnline.Models
         [Display(Name = "Techinician")]
         public string TechinicianId { get; set; }
         public ApplicationUser Techinician { get; set; }
+
+        //Checklist que foi atualizada
+        [ForeignKey("Checklist")]
+        [Display(Name = "Checklist")]
+        public int ChecklistId { get; set; }
+        public Checklist Checklist { get; set; }
     }
 
     public enum TestResult

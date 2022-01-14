@@ -1,15 +1,19 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Schedules>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+@if (User.IsInRole("Client"))
+{
+  <p>
+    <a asp-action="Create">Schedule Test</a>
+</p>  
+}
+<table class="table" id="tableSchedules" >
     <thead>
         <tr>
             <th>
@@ -47,7 +51,14 @@
                 <td>
                     @if (item.Result != null)
                     {
-                        @Html.DisplayFor(modelItem => item.Result)
+                        
+                        @if(item.Result == PWEBLabTestesOnline.Models.TestResult.Other)
+                        {
+                            <p>@Html.DisplayFor(modelItem => item.Description)</p>    
+                        } 
+                        else
+                            @Html.DisplayFor(modelItem => item.Result)
+                        
                     }
                     else
                     {
@@ -97,3 +108,15 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+<script src="jquery-3.5.1.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script>
+    $(document).ready( function () {
+        $('#tableSchedules').DataTable();
+    } );
+
+
+</script>
+}

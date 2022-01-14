@@ -101,14 +101,14 @@ namespace PWEBLabTestesOnline.Controllers
         {
             if (User.IsInRole("Admin"))
             {
-                ModelState.MaxAllowedErrors = 2;
+                ModelState.MaxAllowedErrors = 2; //todo retirar isto
 
                 if (laboratories.Opening.TimeOfDay > laboratories.Enclosure.TimeOfDay)
                 {
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
-                if (!ModelState.HasReachedMaxErrors)
+                if (!ModelState.HasReachedMaxErrors) // Todo: mudar para model.isvalid
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();

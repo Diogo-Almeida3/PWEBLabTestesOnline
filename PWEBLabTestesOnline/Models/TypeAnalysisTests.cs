@@ -17,6 +17,5 @@ namespace PWEBLabTestesOnline.Models
         [ForeignKey("ApplicationUser")]
         public string CreatedById { get; set; }
         public ApplicationUser CreatedBy { get; set; }
-
     }
 }
