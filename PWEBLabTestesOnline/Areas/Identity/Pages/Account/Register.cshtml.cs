@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PWEBLabTestesOnline.Data;
 using PWEBLabTestesOnline.Models;
 
 namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
@@ -25,25 +27,25 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        public List<SelectListItem> Roles { get; }
+
+        private readonly ApplicationDbContext _context;
+        public List<SelectListItem> Roles;
 
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, ApplicationDbContext _context)
+
         {
+            
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
 
-            Roles = new List<SelectListItem>
-            {
-                new SelectListItem {Value = "Client", Text ="Client"},
-                new SelectListItem {Value = "Manager", Text = "Manager"},
-            };
+            this._context = _context;
         }
 
         [BindProperty]
@@ -89,8 +91,23 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
             public string RoleName { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl,int id)
         {
+            if (User.IsInRole("Manager"))
+            {
+                Roles = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = id.ToString(), Text ="Techinician"},
+                };
+            } else
+            {
+                Roles = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = "Client", Text ="Client"},
+                    new SelectListItem {Value = "Manager", Text = "Manager"},
+                };
+            }
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -114,9 +131,28 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    await _userManager.AddToRoleAsync(user,Input.RoleName);
+
+                    if (User.IsInRole("Manager"))
+                    {
+                        var laboratories = _context.Laboratories.Include(m => m.Techinicians).First(lab =>lab.LaboratoriesId == Int32.Parse(Input.RoleName));
+                                        
+
+                       
+
+                        if(laboratories == null)
+                            return NotFound();
+
+                        laboratories.Techinicians.Add(user);
+                        await _userManager.AddToRoleAsync(user, "Techinician");
+                        _context.Update(laboratories);
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    }
 
 
+
+                    await _userManager.AddToRoleAsync(user, Input.RoleName);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",

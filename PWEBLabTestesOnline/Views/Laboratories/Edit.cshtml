@@ -58,7 +58,8 @@
             <div class="form-group">
                 <label asp-for="Techinicians" class="control-label"></label>
                 <br />
-                <a asp-action="Techinicians" asp-route-id="@Model.LaboratoriesId" class="btn btn-sm btn-secondary">Edit Techinicians</a>
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Model.LaboratoriesId" class="btn btn-warning">Add Techinician</a>
+                <a asp-action="Techinicians" asp-route-id="@Model.LaboratoriesId" class="btn btn-danger">Remove Techinician</a>
                 <br /><br />
                 @if (Model.Techinicians != null && Model.Techinicians.Count > 0)
                 {

@@ -113,10 +113,10 @@ namespace PWEBLabTestesOnline.Data.Migrations
             {
                 return NotFound();
             }
-            ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName", vacancies.LaboratoryId);
-            ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name", vacancies.TypeAnalysisTestsId);
-
-            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist, "CurrentChecklistId", "Name", vacancies.CurrentChecklistId);
+            var currentUser = await userManager.GetUserAsync(User);
+            ViewData["LaboratoryId"] = new SelectList(await _context.Laboratories.Where(l => l.ManagerId == userManager.GetUserId(User)).ToListAsync(), "LaboratoriesId", "LaboratoriesName");
+            ViewData["TypeAnalysisTestsId"] = new SelectList(await _context.TypeAnalysisTests.Where(a => a.CreatedById == userManager.GetUserId(User)).ToListAsync(), "TypeAnalysisTestsId", "Name");
+            ViewData["CurrentChecklistId"] = new SelectList(await _context.Checklist.Where(c => c.CreatedById == currentUser.Id).ToListAsync(), "ChecklistId", "Name");
             return View(vacancies);
         }
 
@@ -154,7 +154,7 @@ namespace PWEBLabTestesOnline.Data.Migrations
             }
             ViewData["LaboratoryId"] = new SelectList(_context.Laboratories, "LaboratoriesId", "LaboratoriesName", vacancies.LaboratoryId);
             ViewData["TypeAnalysisTestsId"] = new SelectList(_context.TypeAnalysisTests, "TypeAnalysisTestsId", "Name", vacancies.TypeAnalysisTestsId);
-            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist, "CurrentChecklistId", "Name", vacancies.CurrentChecklistId);
+            ViewData["CurrentChecklistId"] = new SelectList(_context.Checklist, "ChecklistId", "Name", vacancies.CurrentChecklistId);
             return View(vacancies);
         }
 
