@@ -180,7 +180,7 @@ namespace PWEBLabTestesOnline.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ("Techinician"))]
-        public async Task<IActionResult> Edit(int id,Schedules schedules)
+        public async Task<IActionResult> Edit(int id,Schedules schedules,List<int> ProcedureId)
         {
             if (id != schedules.SchedulesId)
             {
@@ -191,29 +191,40 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 try
                 {
-                    
-                        var currentUser = await userManager.GetUserAsync(User);
-                        var schedulesUpdate = await _context.Schedules
+
+                    var currentUser = await userManager.GetUserAsync(User);
+                    var schedulesUpdate = await _context.Schedules
                             .Include(s => s.Client)
                             .Include(s => s.Laboratory)
                             .Include(s => s.Techinician)
                             .Include(s => s.TestType)
                             .Include(s => s.CurrentChecklist)
+                            .Include(s => s.CurrentChecklist.Procedures)
                             .Where(s => s.Laboratory.Techinicians.Contains(currentUser) && s.TechinicianId == currentUser.Id)
                             .FirstOrDefaultAsync(m => m.SchedulesId == id);
 
-                        if (schedulesUpdate == null)
-                        {
-                            return NotFound();
-                        }
+                    if (schedulesUpdate == null)
+                    {
+                        return NotFound();
+                    }
 
+                    if (ProcedureId.Count < schedulesUpdate.CurrentChecklist.Procedures.Count) 
+                        ModelState.AddModelError("Result", "All checkboxes must be filled in");
+
+                    if (ModelState.IsValid)
+                    {                    
                         if (schedules.Result == TestResult.Other)
                             schedulesUpdate.Description = schedules.Description;
 
                         schedulesUpdate.Result = schedules.Result;
                         _context.Update(schedulesUpdate);
                         await _context.SaveChangesAsync();
-                    
+                    }
+                    else
+                    {
+                        return View(schedulesUpdate);
+                    }
+                        
 
                 }
                 catch (DbUpdateConcurrencyException)

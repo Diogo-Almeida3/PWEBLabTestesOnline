@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="error_span" asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="SchedulesId" />
             <div class="form-group">
                 <label asp-for="AppointmentTime" class="control-label"></label>
@@ -28,7 +28,7 @@
             <hr />
             <div class="form-group">
                 <label asp-for="Result" class="control-label"></label>
-                <select id="ResultSelectList" disabled asp-for="Result" onchange="refreshResultInput()" asp-items="Html.GetEnumSelectList<TestResult>()" class="form-control"></select>
+                <select id="ResultSelectList" disabled asp-for="Result" onclick="displayErrorMessage()" onchange="refreshResultInput()" asp-items="Html.GetEnumSelectList<TestResult>()" class="form-control"></select>
                 <span asp-validation-for="Result" class="text-danger"></span>
             </div>
             @*============= Hiden =============*@
@@ -55,7 +55,7 @@
             <hr />
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input id="btnSave" type="submit" value="Save" class="btn btn-primary" disabled/>
             </div>
 
         </form>
@@ -67,6 +67,8 @@
 </div>
 
 <script>
+    var isAllChecked = false;
+
     function refreshResultInput() {
        if( document.getElementById("ResultSelectList").value == 3 ) {
             document.getElementById("other_input").style = "display: block";
@@ -81,12 +83,22 @@
         if( numberNotChecked == 0 ) {
             document.getElementById("ResultSelectList").disabled  = false;
             document.getElementById("other_input1").disabled  = false;
+            document.getElementById("btnSave").disabled  = false;
+            isAllChecked = true;
        }
        else{
            document.getElementById("ResultSelectList").disabled  = true;
            document.getElementById("other_input1").disabled  = true;
+           document.getElementById("btnSave").disabled  = true;
+           isAllChecked = false;
        }
+    }
 
+    function displayErrorMessage() {
+        if(isAllChecked)
+            document.getElementById("error_span").value = "";
+        else
+             document.getElementById("error_span").value = "Fill in all the checkboxes to insert a result and save it";
     }
 </script>
 
