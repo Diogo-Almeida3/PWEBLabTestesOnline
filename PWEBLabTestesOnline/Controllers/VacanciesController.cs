@@ -194,5 +194,15 @@ namespace PWEBLabTestesOnline.Data.Migrations
         {
             return _context.Vacancies.Any(e => e.VacanciesId == id);
         }
+
+        [AllowAnonymous, Authorize(Roles = "Client")]
+        public async Task<IActionResult> Calendar()
+        {
+            var vancancies = _context.Vacancies
+                .Include(v => v.Laboratory).Include(v => v.Type);
+
+
+            return View(await vancancies.ToListAsync());
+        }
     }
 }

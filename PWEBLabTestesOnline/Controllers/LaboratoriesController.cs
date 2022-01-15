@@ -62,6 +62,7 @@ namespace PWEBLabTestesOnline.Controllers
                 var laboratories = await _context.Laboratories
                 .Where(lab => lab.ManagerId == userManager.GetUserId(User))
                 .Include(p => p.Manager)
+                .Include(p => p.Techinicians)
                 .FirstOrDefaultAsync(m => m.LaboratoriesId == id);
                 if(laboratories == null)
                     return NotFound("Could not find or do not have permissions to see details this lab");
@@ -101,14 +102,14 @@ namespace PWEBLabTestesOnline.Controllers
         {
             if (User.IsInRole("Admin"))
             {
-                ModelState.MaxAllowedErrors = 2; //todo retirar isto
+             
 
                 if (laboratories.Opening.TimeOfDay > laboratories.Enclosure.TimeOfDay)
                 {
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
-
-                if (!ModelState.HasReachedMaxErrors) // Todo: mudar para model.isvalid
+                
+                if (ModelState.IsValid)
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();
@@ -124,14 +125,13 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 laboratories.Manager = await userManager.GetUserAsync(User);
                 laboratories.ManagerId = laboratories.Manager.Id;
-                ModelState.MaxAllowedErrors = 2;
 
                 if (laboratories.Opening.TimeOfDay > laboratories.Enclosure.TimeOfDay)
                 {
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
-                if (!ModelState.HasReachedMaxErrors)
+                if (ModelState.IsValid)
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();
@@ -204,14 +204,13 @@ namespace PWEBLabTestesOnline.Controllers
 
             if(User.IsInRole("Admin"))
             {
-                ModelState.MaxAllowedErrors = 2;
 
                 if (laboratories.Opening.TimeOfDay > laboratories.Enclosure.TimeOfDay)
                 {
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
-                if (!ModelState.HasReachedMaxErrors)
+                if (ModelState.IsValid)
                 {
                     try
                     {
@@ -247,7 +246,7 @@ namespace PWEBLabTestesOnline.Controllers
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
-                if (!ModelState.HasReachedMaxErrors)
+                if (!ModelState.HasReachedMaxErrors) // Apesar do modelo ter um erro por ser required um manager o mesmo é adicionado automáticamente por isso permitimos 1 erro máximo
                 {
                     try
                     {
@@ -368,14 +367,8 @@ namespace PWEBLabTestesOnline.Controllers
 
             if (User.IsInRole("Admin"))
             {
-                if(action == "Add") // Adiciona técnico a um laboratório
-                {
-                    await userManager.RemoveFromRoleAsync(user2action, "Client");
-                    await userManager.AddToRoleAsync(user2action, "Techinician");
-                    laboratory.Techinicians.Add(user2action);
-                }
-                else // Remove técnico de um laboratório
-                {              
+                if(action == "Remove") // Adiciona técnico a um laboratório
+                {             
                     if(!laboratory.Techinicians.Remove(user2action))
                     {
                         ViewData["ErrorMessage"] = "Unable to remove this technician or a technician with this email address could not be found";
@@ -392,22 +385,7 @@ namespace PWEBLabTestesOnline.Controllers
                 var currentUser = await userManager.GetUserAsync(User);
                 if (currentUser.Id == laboratory.ManagerId) // Este utilizador é o manager deste laboratório, por isso pode editar
                 {
-                    if (action == "Add") // Pertende adicionar um novo técnico
-                    {
-                        var Clients = await userManager.GetUsersInRoleAsync("Client");
-                        if (Clients.First(c => c.Id == user2action.Id) != null)// Este utilizador é um cliente, por isso pode ser adicionado
-                        {
-                            await userManager.RemoveFromRoleAsync(user2action, "Client");
-                            await userManager.AddToRoleAsync(user2action, "Techinician");
-                            laboratory.Techinicians.Add(user2action);
-                        }
-                        else // Mensagem de erro para informar utilizador
-                        {
-                            ViewData["ErrorMessage"] = "It is not possible to add this user because he is already a technician in a laboratory";
-                            return View(id);
-                        }        
-                    }
-                    else // Pertende remover um técnico
+                    if (action == "Remove") // Pertende adicionar um novo técnico
                     {
                         if (!laboratory.Techinicians.Remove(user2action))
                         {

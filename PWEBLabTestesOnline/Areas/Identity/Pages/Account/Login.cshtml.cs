@@ -86,6 +86,10 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    //if(User.IsInRole("Admin"))
+                    //{
+                    //    RedirectToAction(nameof())
+                    //}
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

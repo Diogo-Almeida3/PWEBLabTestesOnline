@@ -283,9 +283,10 @@ namespace PWEBLabTestesOnline.Controllers
             if (schedules == null)
                 return NotFound();
 
-            if (schedules.AppointmentTime.Subtract(DateTime.Now).TotalHours > 24)
+            if (schedules.AppointmentTime.Subtract(DateTime.Now).TotalHours > 24 && schedules.Result == null)
             {
-                _context.Schedules.Remove(schedules);
+                schedules.Result = TestResult.Unrealized;
+                _context.Schedules.Update(schedules);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -319,6 +320,13 @@ namespace PWEBLabTestesOnline.Controllers
             _context.Schedules.Update(test);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Schedules/Statistics
+        [Authorize(Roles = ("Admin"))]
+        public IActionResult Statistics()
+        {     
+            return View();
         }
     }
 }

@@ -28,11 +28,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.TestType)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrentChecklist)
-            </th>
             @if (User.IsInRole("Techinician"))
             {
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentChecklist)
+                </th>
+            
                 <th>
                     @Html.DisplayNameFor(model => model.Client)
                 </th>
@@ -74,11 +75,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TestType.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
-                </td>
                 @if (User.IsInRole("Techinician"))
                 {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
+                    </td>
+                
                     <td>
                         @Html.DisplayFor(modelItem => item.Client.Email)
                     </td>
@@ -104,7 +106,7 @@
 
                         <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
                     }      
-                    else if((item.AppointmentTime.Subtract(DateTime.Now)).TotalHours > 24)
+                    else if((item.AppointmentTime.Subtract(DateTime.Now)).TotalHours > 24 && item.Result == null)
                     {
                         <a asp-action="Delete" asp-route-id="@item.SchedulesId">Cancel</a>
                     }

@@ -4,16 +4,19 @@
     ViewData["Title"] = "Calendar";
 }
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+
+
 <h1>Calendar</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" id="tableCalendar">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Laboratory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Laboratory.Location)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Type)
@@ -30,36 +33,54 @@
             <th>
                 @Html.DisplayNameFor(model => model.Duration)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DailyLimit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Opening)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enclosure)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.VacanciesId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.VacanciesId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.VacanciesId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Laboratory.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DailyLimit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Opening)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Enclosure)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Duration)
+                    </td>
+                </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+<script src="jquery-3.5.1.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script>
+   $(document).ready( function () {
+
+  var table = $('#tableCalendar').DataTable({"language" : {"sSearch": "Location: ",searchPlaceholder: 'filter locations'}});
+  
+  $('.dataTables_filter input')
+    .off()
+    .on( 'keyup', function () {
+      console.log('event')
+        table.column(1).search( this.value ).draw();
+    } );
+
+ 
+} );
+
+</script>
+}

@@ -9,13 +9,13 @@ namespace PWEBLabTestesOnline.Models
         [Key]
         public int VacanciesId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Laboratory is necessary")]
         [ForeignKey("Laboratories")]
         [Display(Name = "Laboratory Name")]
         public int LaboratoryId { get; set; }
         public Laboratories Laboratory { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Test type is necessary")]
         [ForeignKey("Type")]
         [Display(Name = "Type")]
         public int TypeAnalysisTestsId { get; set; }
@@ -42,7 +42,7 @@ namespace PWEBLabTestesOnline.Models
         [Display(Name = "Duration in minutes")]
         public int Duration { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Check list is necessary")]
         [ForeignKey("Checklist")]
         public int CurrentChecklistId { get; set; }
         public Checklist CurrentChecklist { get; set; }

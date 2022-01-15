@@ -39,7 +39,7 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
             IEmailSender emailSender, ApplicationDbContext _context)
 
         {
-            
+   
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -177,7 +177,23 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
+
+                if (User.IsInRole("Manager"))
+                {
+                    Roles = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = Input.RoleName, Text ="Techinician"},
+                };
+                }
+                else
+                {
+                    Roles = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = "Client", Text ="Client"},
+                    new SelectListItem {Value = "Manager", Text = "Manager"},
+                };
+                }
+            } 
 
             // If we got this far, something failed, redisplay form
             return Page();
