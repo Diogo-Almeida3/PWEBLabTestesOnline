@@ -1,35 +1,41 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Checklist>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<div class="container-fluid">
+    <h1>Checklists</h1>
 
-<h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New Checklist</a>
+    </p>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.ChecklistId">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.ChecklistId">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table" id="dataTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ChecklistId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ChecklistId">Details</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
 

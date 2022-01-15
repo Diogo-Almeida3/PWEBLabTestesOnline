@@ -1,34 +1,41 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Procedure>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<div class="container-fluid">
+    <h1>Procedures</h1>
 
-<h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New Procedure</a>
+    </p>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table" id="dataTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProcedureDescription)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProcedureDescription)
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.ProcedureId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProcedureDescription)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProcedureDescription)
+                                </td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-id="@item.ProcedureId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,117 +1,126 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Schedules>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<div class="container-fluid">
+    <h1>Schedules</h1>
 
-<h1>Index</h1>
+    @if (User.IsInRole("Client"))
+    {
+        <p>
+            <a asp-action="Create">Schedule Test</a>
+        </p>
+    }
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
 
-@if (User.IsInRole("Client"))
-{
-  <p>
-    <a asp-action="Create">Schedule Test</a>
-</p>  
-}
-<table class="table" id="dataTable" >
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Result)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Laboratory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TestType)
-            </th>
-            @if (User.IsInRole("Techinician"))
-            {
-                <th>
-                    @Html.DisplayNameFor(model => model.CurrentChecklist)
-                </th>
-            
-                <th>
-                    @Html.DisplayNameFor(model => model.Client)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Techinician)
-                </th>
-            }
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AppointmentTime)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Result)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Laboratory)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TestType)
+                            </th>
+                            @if (User.IsInRole("Techinician"))
+                            {
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CurrentChecklist)
+                                </th>
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentTime)
-                </td>
-                <td>
-                    @if (item.Result != null)
-                    {
-                        
-                        @if(item.Result == PWEBLabTestesOnline.Models.TestResult.Other)
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Client)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Techinician)
+                                </th>
+                            }
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
                         {
-                            <p>@Html.DisplayFor(modelItem => item.Description)</p>    
-                        } 
-                        else
-                            @Html.DisplayFor(modelItem => item.Result)
-                        
-                    }
-                    else
-                    {
-                        <label>Pending</label>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TestType.Name)
-                </td>
-                @if (User.IsInRole("Techinician"))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
-                    </td>
-                
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Client.Email)
-                    </td>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AppointmentTime)
+                                </td>
+                                <td>
+                                    @if (item.Result != null)
+                                    {
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Techinician.Email)
-                        @if (item.Techinician == null)
-                        {
-                            <form asp-action="Responsible">
-                                <input type="hidden" name="SchedulesId" value="@item.SchedulesId" />
-                                <a href="#" onclick=this.closest('form').submit()>Responsible</a>
-                            </form>
+                                        @if (item.Result == PWEBLabTestesOnline.Models.TestResult.Other)
+                                        {
+                                            <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                                        }
+                                        else
+                                            @Html.DisplayFor(modelItem => item.Result)
+
+
+
+                                    }
+                                    else
+                                    {
+                                        <label>Pending</label>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TestType.Name)
+                                </td>
+                                @if (User.IsInRole("Techinician"))
+                                {
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CurrentChecklist.Name)
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Client.Email)
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Techinician.Email)
+                                        @if (item.Techinician == null)
+                                        {
+                                            <form asp-action="Responsible">
+                                                <input type="hidden" name="SchedulesId" value="@item.SchedulesId" />
+                                                <a href="#" onclick=this.closest('form').submit()>Responsible</a>
+                                            </form>
+                                        }
+                                    </td>
+                                }
+                                <td>
+                                    @if (User.IsInRole("Techinician"))
+                                    {
+                                        @if (item.Techinician != null && item.Techinician.Email == User.Identity.Name && item.Result == null)
+                                        {
+                                            <label><a asp-action="Edit" asp-route-id="@item.SchedulesId">Edit</a> |</label>
+                                        }
+
+                                        <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
+                                    }
+                                    else if ((item.AppointmentTime.Subtract(DateTime.Now)).TotalHours > 24 && item.Result == null)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.SchedulesId">Cancel</a>
+                                    }
+
+                                </td>
+                            </tr>
                         }
-                    </td>
-                }
-                <td>
-                    @if (User.IsInRole("Techinician"))
-                    {
-                        @if (item.Techinician != null && item.Techinician.Email == User.Identity.Name && item.Result == null)
-                        {
-                            <label><a asp-action="Edit" asp-route-id="@item.SchedulesId">Edit</a> |</label>
-                        }
+                    </tbody>
+                </table>
 
-                        <a asp-action="Details" asp-route-id="@item.SchedulesId">Details</a>
-                    }      
-                    else if((item.AppointmentTime.Subtract(DateTime.Now)).TotalHours > 24 && item.Result == null)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.SchedulesId">Cancel</a>
-                    }
+            </div>
+        </div>
+    </div>
+</div>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

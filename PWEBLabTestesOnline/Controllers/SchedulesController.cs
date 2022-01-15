@@ -328,24 +328,52 @@ namespace PWEBLabTestesOnline.Controllers
         {
             var stats = new StatisticsViewModel
             {
-                all = new AllTests
-                {
-
-                    TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized).CountAsync(),
-                    TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive).CountAsync(),
-                    TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative).CountAsync(),
-                    TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive).CountAsync(),
-                },
-                OnDay = new AllTests
-                {
-                    TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
-                    TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
-                    TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
-                    TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
-                }
+                all = await getStats(),
+                FilterDay = DateTime.Now,
+                OnDay = await getStats(DateTime.Now)
             };
 
             return View(stats);
+        }
+
+        // POST: Schedules/Statistics
+        [Authorize(Roles = ("Admin"))]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Statistics(DateTime Date)
+        {
+            var stats = new StatisticsViewModel
+            {
+                all = await getStats(),
+                FilterDay = Date,
+                OnDay = await getStats(Date)
+            };
+
+            return View(stats);
+        }
+
+        private async Task<AllTests> getStats()
+        {
+            return new AllTests
+            {
+
+                TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized).CountAsync(),
+                TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive).CountAsync(),
+                TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative).CountAsync(),
+                TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive).CountAsync(),
+            };
+        }
+
+        private async Task<AllTests> getStats(DateTime date)
+        {
+            return new AllTests
+            {
+
+                TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized && s.AppointmentTime.Date == date.Date).CountAsync(),
+                TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive && s.AppointmentTime.Date == date.Date).CountAsync(),
+                TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative && s.AppointmentTime.Date == date.Date).CountAsync(),
+                TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive && s.AppointmentTime.Date == date.Date).CountAsync(),
+            };
         }
     }
 }

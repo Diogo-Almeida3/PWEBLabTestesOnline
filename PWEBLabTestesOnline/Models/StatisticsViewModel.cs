@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PWEBLabTestesOnline.Models
 {
@@ -6,14 +8,16 @@ namespace PWEBLabTestesOnline.Models
     {
         public AllTests all { get; set; }
 
-        public ICollection<Schedules> TestsOnDay { get; set; }
+        public DateTime FilterDay { get; set; }
         public AllTests OnDay { get; set; }
 
 
-        public ICollection<Schedules> TestsOnWeek { get; set; }
+        public DateTime FilterWeekDay1 { get; set; }
+        public DateTime FilterWeekDay2 { get; set; }
         public AllTests OnWeek { get; set; }
 
-        public ICollection<Schedules> TestsOnMonth { get; set; }
+        [Range(1, 12)]
+        public int Mounth { get; set; }
         public AllTests OnMonth { get; set; }
     }
 

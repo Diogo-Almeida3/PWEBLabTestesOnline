@@ -97,7 +97,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.FilterDay.Date.ToShortDateString()</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -105,9 +105,12 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                              aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Date:</div>
-                            <form>
-                                <input class="dropdown-item" onchange="submit()" type="date" id="date_chart" />
+                            <div class="dropdown-header">Number total of tests:</div>
+                            <label class="dropdown-item">@Model.OnDay.TotalTests</label>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-header">New Date:</div>
+                            <form asp-action="Statistics" method="post">
+                                <input name="Date" class="dropdown-item" onchange="submit()" type="date" id="date_chart" />
                             </form>
                         </div>
                     </div>
@@ -141,6 +144,7 @@
 <!-- Page level plugins -->
 <script src="~/theme/vendor/chart.js/Chart.min.js"></script>
 
+@*============================== Char On Day ==============================*@
 <script type="text/javascript">
     // Set new default font family and font color to mimic Bootstrap's default styling
     Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';

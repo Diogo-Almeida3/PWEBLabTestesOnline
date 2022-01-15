@@ -1,61 +1,68 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Laboratories>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<div class="container-fluid">
+    <h1>Laboratories</h1>
 
-<h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New Laboratory</a>
+    </p>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table" id="dataTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LaboratoriesName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            @if (User.IsInRole("Admin"))
-            {
-                <th>
-                    Manager Email
-                </th>
-            }
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LaboratoriesName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Location)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Manager.Email)
-                    </td>
-                }
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.LaboratoriesId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.LaboratoriesId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.LaboratoriesId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LaboratoriesName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Location)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                            </th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th>
+                                    Manager Email
+                                </th>
+                            }
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LaboratoriesName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Location)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Manager.Email)
+                                    </td>
+                                }
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.LaboratoriesId">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.LaboratoriesId">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.LaboratoriesId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 

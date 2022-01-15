@@ -1,62 +1,69 @@
 ﻿@model IEnumerable<PWEBLabTestesOnline.Models.Vacancies>
 
-@{
-    ViewData["Title"] = "Calendar";
-}
+<div class="container-fluid">
 
-<h1>Calendar</h1>
+    <h1>Calendar</h1>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
 
-<table class="table" id="tableCalendar">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Laboratory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Laboratory.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DailyLimit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Opening)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Enclosure)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Laboratory.Location)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DailyLimit)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Opening)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Enclosure)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Duration)
-                    </td>
-                </tr>
-        }
-    </tbody>
-</table>
+                <table class="table table-bordered" id="tableCalendar" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Laboratory)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Laboratory.Location)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Type)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DailyLimit)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Opening)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Enclosure)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Duration)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Laboratory.LaboratoriesName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Laboratory.Location)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Type.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DailyLimit)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Opening)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Enclosure)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Duration)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

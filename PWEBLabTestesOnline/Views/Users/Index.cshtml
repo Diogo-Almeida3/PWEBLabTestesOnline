@@ -1,65 +1,75 @@
 ﻿@model List<UsersViewModel>
+<div class="container-fluid">
 
-<h1>Users List</h1>
-<table class="table table-bordered table-hover" id="dataTable">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th>Activated</th>
-            <th>Laboratory</th>
-            <th>Options</th>
-        </tr>
-    </thead>
+    <h1>Users List</h1>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
 
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.ApplicationUser.FirstName @user.ApplicationUser.LastName</td>
-                <td>@user.Role</td>
-                <td>@user.ApplicationUser.Email</td>
-                <td>@user.ApplicationUser.EmailConfirmed</td>
-                @if (@user.Laboratories.Count > 1)
-                {
-                    <td>
-                        @user.Laboratories.First().LaboratoriesName
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                        </svg>
-                    </td>
-                }
-                else if (@user.Laboratories.Count == 1)
-                {
-                    <td>@user.Laboratories.First().LaboratoriesName</td>
-                }
-                else
-                {
-                    <td></td>
-                }
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Activated</th>
+                            <th>Laboratory</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
 
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.ApplicationUser.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@user.ApplicationUser.Id">Details</a> |
-                    @if (!user.ApplicationUser.EmailConfirmed)
-                    {
-                        <form asp-action="Activate">
-                            <input type="hidden" name="IdUser" value="@user.ApplicationUser.Id"/>
-                            <a href="#" onclick=this.closest('form').submit()>Activate</a>
-                        </form>
-                        
-                    }
-                    else
-                    {
-                        <form asp-action="Deactivate">
-                            <input type="hidden" name="IdUser" value="@user.ApplicationUser.Id"/>
-                            <a href="#" onclick=this.closest('form').submit()>Deactivate</a>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.ApplicationUser.FirstName @user.ApplicationUser.LastName</td>
+                                <td>@user.Role</td>
+                                <td>@user.ApplicationUser.Email</td>
+                                <td>@user.ApplicationUser.EmailConfirmed</td>
+                                @if (@user.Laboratories.Count > 1)
+                                {
+                                    <td>
+                                        @user.Laboratories.First().LaboratoriesName
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                        </svg>
+                                    </td>
+                                }
+                                else if (@user.Laboratories.Count == 1)
+                                {
+                                    <td>@user.Laboratories.First().LaboratoriesName</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
 
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@user.ApplicationUser.Id">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@user.ApplicationUser.Id">Details</a> |
+                                    @if (!user.ApplicationUser.EmailConfirmed)
+                                    {
+                                        <form asp-action="Activate">
+                                            <input type="hidden" name="IdUser" value="@user.ApplicationUser.Id" />
+                                            <a href="#" onclick=this.closest('form').submit()>Activate</a>
+                                        </form>
+
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Deactivate">
+                                            <input type="hidden" name="IdUser" value="@user.ApplicationUser.Id" />
+                                            <a href="#" onclick=this.closest('form').submit()>Deactivate</a>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
