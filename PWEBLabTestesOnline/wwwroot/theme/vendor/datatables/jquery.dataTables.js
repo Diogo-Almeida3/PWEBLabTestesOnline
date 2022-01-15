@@ -1595,13 +1595,12 @@
 		if (Array.isArray(val)) {
 			for (var i=0 ; i<val.length ; i++) {
 				_flatten(out, val[i]);
-			}
+				jquery -
 		}
 		else {
 			out.push(val);
 		}
-	  
-		return out;
+		jquery -		return out;
 	}
 	
 	// Array.isArray polyfill.

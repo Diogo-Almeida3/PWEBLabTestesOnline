@@ -324,9 +324,28 @@ namespace PWEBLabTestesOnline.Controllers
 
         // GET: Schedules/Statistics
         [Authorize(Roles = ("Admin"))]
-        public IActionResult Statistics()
-        {     
-            return View();
+        public async Task<IActionResult> Statistics()
+        {
+            var stats = new StatisticsViewModel
+            {
+                all = new AllTests
+                {
+
+                    TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized).CountAsync(),
+                    TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive).CountAsync(),
+                    TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative).CountAsync(),
+                    TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive).CountAsync(),
+                },
+                OnDay = new AllTests
+                {
+                    TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
+                    TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
+                    TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
+                    TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive && s.AppointmentTime.Date == DateTime.Now.Date).CountAsync(),
+                }
+            };
+
+            return View(stats);
         }
     }
 }

@@ -4,9 +4,6 @@
     ViewData["Title"] = "Calendar";
 }
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
-
-
 <h1>Calendar</h1>
 
 <table class="table" id="tableCalendar">
@@ -63,24 +60,3 @@
         }
     </tbody>
 </table>
-
-@section Scripts {
-<script src="jquery-3.5.1.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
-<script>
-   $(document).ready( function () {
-
-  var table = $('#tableCalendar').DataTable({"language" : {"sSearch": "Location: ",searchPlaceholder: 'filter locations'}});
-  
-  $('.dataTables_filter input')
-    .off()
-    .on( 'keyup', function () {
-      console.log('event')
-        table.column(1).search( this.value ).draw();
-    } );
-
- 
-} );
-
-</script>
-}

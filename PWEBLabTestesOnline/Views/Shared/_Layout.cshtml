@@ -22,6 +22,8 @@
 
     <!-- Custom styles for this template-->
     <link href="~/theme/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <link href="~/theme/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -271,7 +273,8 @@
                     </div>
 
                     <!-- Content Row -->
-                    <div class="row">
+                    <div >
+                        
                         @RenderBody()
                     </div>
 
@@ -339,7 +342,15 @@
     <script src="~/theme/js/demo/chart-area-demo.js"></script>
     <script src="~/theme/js/demo/chart-pie-demo.js"></script>
 
+    
+    <!-- Datatables scripts -->
+    <script src="~/theme/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/theme/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+    <!-- Page level custom scripts -->
+    <script src="~/theme/js/demo/indexdatatables.js"></script>
+    
+    <script src="~/theme/js/demo/locationdatatable.js"></script>
 
 
 </body>
