@@ -92,7 +92,7 @@
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Pie Chart -->
+        <!-- Pie Chart Day -->
         <div class="col-xl-6 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -135,12 +135,80 @@
             </div>
         </div>
 
+        <!-- Pie Chart Week -->
+        <div class="col-xl-6 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1 - @Model.FilterWeekDay1</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Number total of tests:</div>
+                            <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-header">New Week:</div>
+                            <form asp-action="Statistics" method="post">
+                                <input name="Week" class="dropdown-item" onchange="submit()" type="week" id="week_chart" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="PieChartDay"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> Positive
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Negative
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-info"></i> Inconclusive
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Content Row -->
     </div>
 </div>
 
 @section Scripts {
+<script>
+        function test() {
+            var asd = document.getElementById("week_chart").value
+            let dates = parseDates(asd);
+            alert(dates)
+        }
+
+        let parseDates = (inp) => {
+            let year = parseInt(inp.slice(0,4), 10);
+            let week = parseInt(inp.slice(6), 10);
+
+            let day = (1 + (week - 1) * 7); // 1st of January + 7 days for each week
+
+            let dayOffset = new Date(year, 0, 1).getDay(); // we need to know at what day of the week the year start
+
+            dayOffset--;  // depending on what day you want the week to start increment or decrement this value. This should make the week start on a monday
+
+            let days = [];
+            for (let i = 0; i < 7; i++) // do this 7 times, once for every day
+            days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
+            return days;
+        }
+</script>
+
+
 <!-- Page level plugins -->
 <script src="~/theme/vendor/chart.js/Chart.min.js"></script>
 
