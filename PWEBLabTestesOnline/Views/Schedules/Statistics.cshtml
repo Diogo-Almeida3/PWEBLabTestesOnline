@@ -140,7 +140,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1 - @Model.FilterWeekDay1</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1.ToShortDateString() - @Model.FilterWeekDay1.ToShortDateString()</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -149,11 +149,12 @@
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                              aria-labelledby="dropdownMenuLink">
                             <div class="dropdown-header">Number total of tests:</div>
-                            <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
+                            <label class="dropdown-item"></label>
                             <div class="dropdown-divider"></div>
                             <div class="dropdown-header">New Week:</div>
-                            <form asp-action="Statistics" method="post">
-                                <input name="Week" class="dropdown-item" onchange="submit()" type="week" id="week_chart" />
+                            <form asp-action="StatisticsWeek" method="post" id="form_week">
+                                <input class="dropdown-item" onchange="submitWeek()" type="Week" id="week_chart_select" />
+                                <input type="text" name="Week" style="display: none" id="week_chart_txt" />
                             </form>
                         </div>
                     </div>
@@ -185,10 +186,12 @@
 
 @section Scripts {
 <script>
-        function test() {
-            var asd = document.getElementById("week_chart").value
-            let dates = parseDates(asd);
-            alert(dates)
+        function submitWeek() {
+            var week = document.getElementById("week_chart_select").value
+            let dates = parseDates(week);
+            document.getElementById("week_chart_txt").value = JSON.stringify(dates);
+            alert(document.getElementById("week_chart_txt").value)
+            document.getElementById("form_week").submit();
         }
 
         let parseDates = (inp) => {

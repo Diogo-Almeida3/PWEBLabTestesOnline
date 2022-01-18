@@ -81,12 +81,12 @@ namespace PWEBLabTestesOnline.Data.Migrations
             if (!(checkList.CreatedById == userManager.GetUserId(User))) ModelState.AddModelError("ChekList", "This checklist does not belong to this user");
 
             // Verifica se o horário de teste está dentro do horário de funcionamento do laboratório
-            if (!(vacancies.Opening.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Opening.TimeOfDay <= lab.Enclosure.TimeOfDay) 
-                || !(vacancies.Enclosure.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Enclosure.TimeOfDay <= lab.Enclosure.TimeOfDay) 
+            if (!(vacancies.Opening.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Opening.TimeOfDay <= lab.Enclosure.TimeOfDay)
+                || !(vacancies.Enclosure.TimeOfDay >= lab.Opening.TimeOfDay && vacancies.Enclosure.TimeOfDay <= lab.Enclosure.TimeOfDay)
                 || vacancies.Enclosure.TimeOfDay < vacancies.Opening.TimeOfDay)
             {
                 ModelState.AddModelError("Opening", "Choose a valid time between " + lab.Opening.ToShortTimeString() + " and " + lab.Enclosure.ToShortTimeString() + "  and the opening time must be less than the closing time");
-            }       
+            }
 
             if (ModelState.IsValid)
             {
@@ -203,6 +203,20 @@ namespace PWEBLabTestesOnline.Data.Migrations
 
 
             return View(await vancancies.ToListAsync());
+        }
+
+        [AllowAnonymous, Authorize(Roles = "Client")]
+        public async Task<IActionResult> Search(string search)
+        {
+
+            var vacancies = _context.Vacancies
+                .Include(v => v.Laboratory).Include(v => v.Type);
+            if (search == null)
+                return View("Calendar", await vacancies.ToListAsync());
+
+            return View("Calendar", await vacancies
+                .Where(v => v.Laboratory.Location.ToLower().Contains(search.ToLower())
+                ).ToListAsync());
         }
     }
 }
