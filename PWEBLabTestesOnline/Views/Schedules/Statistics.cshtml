@@ -140,7 +140,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1.ToShortDateString() - @Model.FilterWeekDay1.ToShortDateString()</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1.ToShortDateString() - @Model.FilterWeekDay2.ToShortDateString()</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -149,7 +149,7 @@
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                              aria-labelledby="dropdownMenuLink">
                             <div class="dropdown-header">Number total of tests:</div>
-                            <label class="dropdown-item"></label>
+                            <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
                             <div class="dropdown-divider"></div>
                             <div class="dropdown-header">New Week:</div>
                             <form asp-action="StatisticsWeek" method="post" id="form_week">
@@ -162,7 +162,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-pie pt-4 pb-2">
-                        <canvas id="PieChartDay"></canvas>
+                        <canvas id="PieChartWeek"></canvas>
                     </div>
                     <div class="mt-4 text-center small">
                         <span class="mr-2">
@@ -189,14 +189,13 @@
         function submitWeek() {
             var week = document.getElementById("week_chart_select").value
             let dates = parseDates(week);
-            document.getElementById("week_chart_txt").value = JSON.stringify(dates);
-            alert(document.getElementById("week_chart_txt").value)
+            document.getElementById("week_chart_txt").value = JSON.stringify(dates); 
             document.getElementById("form_week").submit();
         }
 
         let parseDates = (inp) => {
             let year = parseInt(inp.slice(0,4), 10);
-            let week = parseInt(inp.slice(6), 10);
+            let week = parseInt(inp.slice(6), 10) + 1;
 
             let day = (1 + (week - 1) * 7); // 1st of January + 7 days for each week
 
@@ -206,7 +205,7 @@
 
             let days = [];
             for (let i = 0; i < 7; i++) // do this 7 times, once for every day
-            days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
+                days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
             return days;
         }
 </script>
@@ -229,6 +228,45 @@
         labels: ["Positive", "Negative", "Inconclusive"],
         datasets: [{
           data: [@Model.OnDay.TotalPositiveTests, @Model.OnDay.TotalNegativeTests, @Model.OnDay.TotalInconclusiveTests],
+          backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+          hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+</script>
+
+@*============================== Char On Week ==============================*@
+<script type="text/javascript">
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    // Pie Chart Example
+    var ctx = document.getElementById("PieChartWeek");
+    var myPieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ["Positive", "Negative", "Inconclusive"],
+        datasets: [{
+          data: [@Model.OnWeek.TotalPositiveTests, @Model.OnWeek.TotalNegativeTests, @Model.OnWeek.TotalInconclusiveTests],
           backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
           hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
           hoverBorderColor: "rgba(234, 236, 244, 1)",

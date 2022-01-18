@@ -334,7 +334,10 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 all = await getStats(),
                 FilterDay = DateTime.Now,
-                OnDay = await getStats(DateTime.Now)
+                OnDay = await getStats(DateTime.Now),
+                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
+                FilterWeekDay1 = DateTime.Now,
+                FilterWeekDay2 = DateTime.Now.AddDays(7),
             };
 
             return View(stats);
@@ -350,7 +353,10 @@ namespace PWEBLabTestesOnline.Controllers
             {
                 all = await getStats(),
                 FilterDay = Date,
-                OnDay = await getStats(Date)
+                OnDay = await getStats(Date),
+                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
+                FilterWeekDay1 = DateTime.Now,
+                FilterWeekDay2 = DateTime.Now.AddDays(7),
             };
 
             return View(stats);
@@ -363,8 +369,6 @@ namespace PWEBLabTestesOnline.Controllers
         public async Task<IActionResult> StatisticsWeek(String Week)
         {
             var days = JsonSerializer.Deserialize<DateTime[]>(Week);
-
-
 
             var stats = new StatisticsViewModel
             {
@@ -385,7 +389,6 @@ namespace PWEBLabTestesOnline.Controllers
         {
             return new AllTests
             {
-
                 TotalTests = await _context.Schedules.Where(s => s.Result != null && s.Result != TestResult.Unrealized).CountAsync(),
                 TotalPositiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Positive).CountAsync(),
                 TotalNegativeTests = await _context.Schedules.Where(s => s.Result == TestResult.Negative).CountAsync(),
