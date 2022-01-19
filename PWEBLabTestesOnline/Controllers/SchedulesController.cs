@@ -33,7 +33,7 @@ namespace PWEBLabTestesOnline.Controllers
         [Authorize(Roles = ("Techinician,Client"))]
         public async Task<IActionResult> Index()
         {
-            if(User.IsInRole("Techinician"))
+            if (User.IsInRole("Techinician"))
             {
                 var currentUser = await userManager.GetUserAsync(User);
                 var applicationDbContext = _context.Schedules
@@ -100,10 +100,10 @@ namespace PWEBLabTestesOnline.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ("Client"))]
-        public async Task<IActionResult> Create([Bind("SchedulesId,AppointmentTime,LaboratoryId,TestTypeId,CurrentChecklistId")] Schedules schedules,List<string> lab_tests)
+        public async Task<IActionResult> Create([Bind("SchedulesId,AppointmentTime,LaboratoryId,TestTypeId,CurrentChecklistId")] Schedules schedules, List<string> lab_tests)
         {
             schedules.LaboratoryId = int.Parse(lab_tests[0]);
-            
+
             if (lab_tests.Count > 1 && lab_tests[1] == "Create") // Se carregou no botão create
             {
                 var vacancy = await _context.Vacancies.Include(v => v.CurrentChecklist).Where(v => v.TypeAnalysisTestsId == schedules.TestTypeId && schedules.LaboratoryId == v.LaboratoryId).FirstOrDefaultAsync();
@@ -184,7 +184,7 @@ namespace PWEBLabTestesOnline.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ("Techinician"))]
-        public async Task<IActionResult> Edit(int id,Schedules schedules,List<int> ProcedureId)
+        public async Task<IActionResult> Edit(int id, Schedules schedules, List<int> ProcedureId)
         {
             if (id != schedules.SchedulesId)
             {
@@ -212,11 +212,11 @@ namespace PWEBLabTestesOnline.Controllers
                         return NotFound();
                     }
 
-                    if (ProcedureId.Count < schedulesUpdate.CurrentChecklist.Procedures.Count) 
+                    if (ProcedureId.Count < schedulesUpdate.CurrentChecklist.Procedures.Count)
                         ModelState.AddModelError("Result", "All checkboxes must be filled in");
 
                     if (ModelState.IsValid)
-                    {                    
+                    {
                         if (schedules.Result == TestResult.Other)
                             schedulesUpdate.Description = schedules.Description;
 
@@ -228,7 +228,7 @@ namespace PWEBLabTestesOnline.Controllers
                     {
                         return View(schedulesUpdate);
                     }
-                        
+
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -282,7 +282,7 @@ namespace PWEBLabTestesOnline.Controllers
         [Authorize(Roles = ("Client"))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var currentUser = await userManager.GetUserAsync(User);    
+            var currentUser = await userManager.GetUserAsync(User);
             var schedules = await _context.Schedules.Where(s => s.ClientId == currentUser.Id && s.SchedulesId == id).FirstAsync();
             if (schedules == null)
                 return NotFound();
@@ -338,6 +338,7 @@ namespace PWEBLabTestesOnline.Controllers
                 OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
                 FilterWeekDay1 = DateTime.Now,
                 FilterWeekDay2 = DateTime.Now.AddDays(7),
+                OnMonth = await getStats(FirstDayOfMonth(DateTime.Now), LastDayOfMonth(DateTime.Now))
             };
 
             return View(stats);
@@ -380,7 +381,31 @@ namespace PWEBLabTestesOnline.Controllers
                 FilterWeekDay2 = days.Last(),
             };
 
-            return View("Statistics",stats);
+            return View("Statistics", stats);
+        }
+
+        // POST: Schedules/Statistics
+        [Authorize(Roles = ("Admin"))]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StatisticsMonth(String Month)
+        {
+            var firstDayOfMonth = new DateTime(int.Parse(Month.Substring(0, 4)), int.Parse(Month.Substring(5)), 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            var stats = new StatisticsViewModel
+            {
+                all = await getStats(),
+                FilterDay = DateTime.Now,
+                OnDay = await getStats(DateTime.Now),
+                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
+                FilterWeekDay1 = DateTime.Now,
+                FilterWeekDay2 = DateTime.Now.AddDays(7),
+                OnMonth = await getStats(firstDayOfMonth, lastDayOfMonth),
+                Month = Month
+            };
+
+            return View("Statistics", stats);
         }
 
 
@@ -418,5 +443,24 @@ namespace PWEBLabTestesOnline.Controllers
                 TotalInconclusiveTests = await _context.Schedules.Where(s => s.Result == TestResult.Inconclusive && s.AppointmentTime.Date >= date1.Date && s.AppointmentTime.Date <= date2.Date).CountAsync(),
             };
         }
+
+        private DateTime FirstDayOfWeek(DateTime dt)
+        {
+            var culture = System.Threading.Thread.CurrentThread.CurrentCulture;
+            var diff = dt.DayOfWeek - culture.DateTimeFormat.FirstDayOfWeek;
+
+            if (diff < 0)
+            {
+                diff += 7;
+            }
+
+            return dt.AddDays(-diff).Date;
+        }
+
+        private  DateTime LastDayOfWeek(DateTime dt) => FirstDayOfWeek(dt).AddDays(6);
+
+        private DateTime FirstDayOfMonth(DateTime dt) => new DateTime(dt.Year, dt.Month, 1);
+
+        private DateTime LastDayOfMonth(DateTime dt) => FirstDayOfMonth(dt).AddMonths(1).AddDays(-1);
     }
 }

@@ -1,138 +1,152 @@
 ﻿@model PWEBLabTestesOnline.Models.Laboratories
 
-@{
-    ViewData["Title"] = "Details";
-}
+<div class="container">
 
-<h1>Details</h1>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-<div>
-    <h4>Laboratories</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LaboratoriesName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LaboratoriesName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Opening)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Opening)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Enclosure)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Enclosure)
-        </dd>
-        <dt class="col-sm-2">
-            Manager Name
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Manager.FirstName) @Html.DisplayFor(model => model.Manager.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            Manager Email
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Manager.Email)
-        </dd>
-        <dt class="col-sm-2">
-            Number of Technicians
-        </dt>
-        <dd class="col-sm-10">
-            @if (@Model.Techinicians == null)
-            {
-                <p>0</p>
-            }
-            else
-            {
-                @Html.DisplayFor(model => model.Techinicians.Count)
-            }
-        </dd>
-    </dl>
+        <div class="col-xl-10 col-lg-12 col-md-9">
 
-    @if (@Model.Techinicians != null)
-    {
-        @if (@Model.Techinicians.Count > 0)
-        {
-            <h4>Techinicians</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                    <h1>Details</h1>
+                                </div>
+                                <dl class="row">
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.LaboratoriesName)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.LaboratoriesName)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.Location)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Location)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.PhoneNumber)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.Opening)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Opening)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.Enclosure)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Enclosure)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        Manager Name
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Manager.FirstName) @Html.DisplayFor(model => model.Manager.LastName)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        Manager Email
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Manager.Email)
+                                    </dd>
+                                    <dt class="col-sm-10">
+                                        Number of Technicians
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @if (@Model.Techinicians == null)
+                                        {
+                                            <p>0</p>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.Techinicians.Count)
+                                        }
+                                    </dd>
+                                </dl>
 
-                    @foreach (var tec in Model.Techinicians)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => tec.FirstName) @Html.DisplayFor(modelItem => tec.LastName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => tec.Email)
-                            </td>
-                        </tr>
-                    }
+                                @if (@Model.Techinicians != null)
+                                {
+                                    @if (@Model.Techinicians.Count > 0)
+                                    {
+                                        <h4>Techinicians</h4>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Name
+                                                    </th>
+                                                    <th>
+                                                        Email
+                                                    </th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
-                </tbody>
-            </table>
-        }
-    }
+                                                @foreach (var tec in Model.Techinicians)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => tec.FirstName) @Html.DisplayFor(modelItem => tec.LastName)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => tec.Email)
+                                                        </td>
+                                                    </tr>
+                                                }
 
-    <h4>Location Map</h4>
-    <div class="mapouter">
-        <div class="gmap_canvas">
-            <iframe width="650" height="400" id="map_location_lab" src="https://maps.google.com/maps?q=Instituto+Superior+de+Engenharia+de+Coimbra&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://fmovies-online.net">fmovies</a><br><style>
-                                                                                                                                                                                                                                                                                     .mapouter {
-                                                                                                                                                                                                                                                                                         position: relative;
-                                                                                                                                                                                                                                                                                         text-align: right;
-                                                                                                                                                                                                                                                                                         height: 400px;
-                                                                                                                                                                                                                                                                                         width: 650px;
-                                                                                                                                                                                                                                                                                     }</style><a href="https://www.embedgooglemap.net">embedgooglemap.net</a><style>
-                                                                                                                                                                                                                                                                                                                                                                 .gmap_canvas {
-                                                                                                                                                                                                                                                                                                                                                                     overflow: hidden;
-                                                                                                                                                                                                                                                                                                                                                                     background: none !important;
-                                                                                                                                                                                                                                                                                                                                                                     height: 400px;
-                                                                                                                                                                                                                                                                                                                                                                     width: 650px;
-                                                                                                                                                                                                                                                                                                                                                                 }</style>
+                                            </tbody>
+                                        </table>
+                                    }
+                                }
+
+                                <h4>Location Map</h4>
+                                <div class="mapouter">
+                                    <div class="gmap_canvas">
+                                        <iframe width="650" height="400" id="map_location_lab" src="https://maps.google.com/maps?q=Instituto+Superior+de+Engenharia+de+Coimbra&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://fmovies-online.net">fmovies</a><br><style>
+                                                                                                                                                                                                                                                                                                                                                     .mapouter {
+                                                                                                                                                                                                                                                                                                                                                         position: relative;
+                                                                                                                                                                                                                                                                                                                                                         text-align: right;
+                                                                                                                                                                                                                                                                                                                                                         height: 400px;
+                                                                                                                                                                                                                                                                                                                                                         width: 650px;
+                                                                                                                                                                                                                                                                                                                                                     }</style><a href="https://www.embedgooglemap.net">embedgooglemap.net</a><style>
+                                                                                                                                                                                                                                                                                                                                                                                                                                 .gmap_canvas {
+                                                                                                                                                                                                                                                                                                                                                                                                                                     overflow: hidden;
+                                                                                                                                                                                                                                                                                                                                                                                                                                     background: none !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                     height: 400px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                     width: 650px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                 }</style>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a asp-action="Edit" asp-route-id="@Model.LaboratoriesId">Edit</a> |
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.LaboratoriesId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 <script>
     function reloadMap() {
         var location = '@Html.Raw(Model.Location)';
 
-        document.getElementById("map_location_lab").src = 
+        document.getElementById("map_location_lab").src =
             "https://maps.google.com/maps?q="+ location +"&t=&z=13&ie=UTF8&iwloc=&output=embed";
     }
     window.onload = reloadMap;

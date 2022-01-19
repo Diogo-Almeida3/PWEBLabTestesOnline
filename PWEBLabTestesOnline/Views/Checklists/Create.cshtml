@@ -3,35 +3,43 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
-@{
-    ViewData["Title"] = "Create";
-}
+<div class="container">
 
-<h1>Create</h1>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-<h4>Checklist</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                    <h1>Create CheckList</h1>
+                                </div>
+                                <form asp-action="Create">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-group">
+                                        <label asp-for="Name" class="control-label text-secondary"></label>
+                                        <input asp-for="Name" class="form-control" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                    </div>
+                                </form>
+                                <div>
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 
 @section Scripts {
     @{

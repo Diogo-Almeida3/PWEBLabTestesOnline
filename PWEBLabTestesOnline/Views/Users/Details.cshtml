@@ -1,35 +1,41 @@
 ﻿@model PWEBLabTestesOnline.Models.UsersViewModel
 
-@{
-    ViewData["Title"] = "Details";
-}
+<div class="container">
 
-<h1>Details</h1>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+            <h1>Users Details</h1>
+        </div>
+                                <dl class="row">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.ApplicationUser.FirstName)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ApplicationUser.FirstName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.ApplicationUser.LastName)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ApplicationUser.LastName)
         </dd class = "col-sm-10">
         
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.ApplicationUser.Email)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ApplicationUser.Email)
         </dd class = "col-sm-10">
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.ApplicationUser.PhoneNumber)
         </dt>
         <dd class = "col-sm-10">
@@ -72,8 +78,16 @@
         </tbody>
     </table> 
     }
-    
+                        <div>
+                            <a asp-action="Index">Back to List</a>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+

@@ -1,51 +1,70 @@
 ﻿@model PWEBLabTestesOnline.Models.ApplicationUser
 
-<h1>Edit</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+<div class="container">
 
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" disabled="disabled" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+        <div class="col-xl-10 col-lg-12 col-md-9">
 
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                    <h1>Edit Users</h1>
+                                </div>
+                                <form asp-action="Edit">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="Id" />
 
-            <div class="form-group">
-                <label class="control-label">Role</label>
-                <select name="Role" class="form-control" asp-items="ViewBag.Roles"></select>
-            </div>
+                                    <div class="form-group">
+                                        <label asp-for="Email" class="control-label"></label>
+                                        <input asp-for="Email" class="form-control" disabled="disabled" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
 
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    <div class="form-group">
+                                        <label asp-for="FirstName" class="control-label"></label>
+                                        <input asp-for="FirstName" class="form-control" />
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="LastName" class="control-label"></label>
+                                        <input asp-for="LastName" class="form-control" />
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Role</label>
+                                        <select name="Role" class="form-control" asp-items="ViewBag.Roles"></select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="PhoneNumber" class="control-label"></label>
+                                        <input asp-for="PhoneNumber" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Save" class="btn btn-primary" />
+                                    </div>
+                                </form>
+                                <div>
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
 
 @section Scripts {
     @{

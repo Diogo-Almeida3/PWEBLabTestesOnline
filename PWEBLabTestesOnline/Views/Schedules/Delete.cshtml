@@ -1,23 +1,29 @@
 ﻿@model PWEBLabTestesOnline.Models.Schedules
 
-@{
-    ViewData["Title"] = "Delete";
-}
+<div class="container">
 
-<h1>Delete</h1>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+            <h1>Delete Schedules</h1>
+        </div>
 <h3>Are you sure you want to cancel this?</h3>
-<div>
-    <h4>Schedules</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
+                                <dl class="row">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.AppointmentTime)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.AppointmentTime)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.Result)
         </dt>
         <dd class = "col-sm-10">
@@ -30,13 +36,13 @@
               @Html.DisplayFor(model => model.Result)  
             }
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.Laboratory)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Laboratory.LaboratoriesName)
         </dd class>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-10">
             @Html.DisplayNameFor(model => model.TestType)
         </dt>
 
@@ -50,4 +56,11 @@
         <input type="submit" value="Cancel" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

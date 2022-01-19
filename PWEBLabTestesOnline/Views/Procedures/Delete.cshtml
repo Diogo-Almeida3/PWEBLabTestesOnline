@@ -1,27 +1,41 @@
 ﻿@model PWEBLabTestesOnline.Models.Procedure
 
-@{
-    ViewData["Title"] = "Delete";
-}
+<div class="container">
 
-<h1>Delete</h1>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Procedure</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProcedureDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProcedureDescription)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ProcedureId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                    <h1>Delete Procedure</h1>
+                                </div>
+                                <dl class="row">
+                                    <dt class="col-sm-10">
+                                        @Html.DisplayNameFor(model => model.ProcedureDescription)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.ProcedureDescription)
+                                    </dd>
+                                </dl>
+
+                                <form asp-action="Delete">
+                                    <input type="hidden" asp-for="ProcedureId" />
+                                    <input type="submit" value="Delete" class="btn btn-danger" /> |
+                                    <a asp-action="Index">Back to List</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+

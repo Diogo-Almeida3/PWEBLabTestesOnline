@@ -16,8 +16,7 @@ namespace PWEBLabTestesOnline.Models
         public DateTime FilterWeekDay2 { get; set; }
         public AllTests OnWeek { get; set; }
 
-        [Range(1, 12)]
-        public int Mounth { get; set; }
+        public string Month { get; set; }
         public AllTests OnMonth { get; set; }
     }
 
