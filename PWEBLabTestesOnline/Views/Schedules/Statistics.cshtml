@@ -90,141 +90,135 @@
     </div>
 
     <!-- Content Row -->
-    <div class="row">
 
-        <!-- Pie Chart Day -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.FilterDay.Date.ToShortDateString()</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                             aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Number total of tests:</div>
-                            <label class="dropdown-item">@Model.OnDay.TotalTests</label>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-header">New Date:</div>
-                            <form asp-action="Statistics" method="post">
+    <form asp-action="Statistics" method="post">
+        <div class="row">
+            <!-- Pie Chart Day -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.FilterDay.Date.ToShortDateString()</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                 aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Number total of tests:</div>
+                                <label class="dropdown-item">@Model.OnDay.TotalTests</label>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-header">New Date:</div>
                                 <input name="Date" class="dropdown-item" onchange="submit()" type="date" id="date_chart" />
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="PieChartDay"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-primary"></i> Positive
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-success"></i> Negative
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-info"></i> Inconclusive
+                            </span>
                         </div>
                     </div>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="PieChartDay"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Positive
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Negative
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Inconclusive
-                        </span>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <!-- Pie Chart Week -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1.ToShortDateString() - @Model.FilterWeekDay2.ToShortDateString()</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                             aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Number total of tests:</div>
-                            <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-header">New Week:</div>
-                            <form asp-action="StatisticsWeek" method="post" id="form_week">
-                                <input class="dropdown-item" onchange="submitWeek()" type="Week" id="week_chart_select" />
-                                <input type="text" name="Week" style="display: none" id="week_chart_txt" />
-                            </form>
+            <!-- Pie Chart Week -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Tests of Week @Model.FilterWeekDay1.ToShortDateString() - @Model.FilterWeekDay2.ToShortDateString()</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                 aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Number total of tests:</div>
+                                <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-header">New Week:</div>
+                                <input class="dropdown-item" name="Week" onchange="submitWeek()" type="Week" id="week_chart_select" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="PieChartWeek"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-primary"></i> Positive
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-success"></i> Negative
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-info"></i> Inconclusive
+                            </span>
                         </div>
                     </div>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="PieChartWeek"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Positive
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Negative
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Inconclusive
-                        </span>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <!-- Pie Chart Month -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.Month</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                             aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Number total of tests:</div>
-                            <label class="dropdown-item">@Model.OnMonth.TotalTests</label>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-header">New Month:</div>
-                            <form asp-action="StatisticsMonth" method="post">
+            <!-- Pie Chart Month -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.Month</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                 aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Number total of tests:</div>
+                                <label class="dropdown-item">@Model.OnMonth.TotalTests</label>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-header">New Month:</div>
                                 <input class="dropdown-item" onchange="submit()" name="Month" type="month" id="month_chart_select" />
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="PieChartMonth"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-primary"></i> Positive
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-success"></i> Negative
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-info"></i> Inconclusive
+                            </span>
                         </div>
                     </div>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="PieChartMonth"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Positive
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Negative
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Inconclusive
-                        </span>
-                    </div>
-                </div>
             </div>
+            <!-- Content Row -->
         </div>
+    </form>
 
-
-        <!-- Content Row -->
-    </div>
 </div>
 
 @section Scripts {
@@ -234,7 +228,25 @@
 <!-- Page level plugins -->
 <script src="~/theme/vendor/chart.js/Chart.min.js"></script>
 
-@*============================== Char On Day ==============================*@
+<script>
+    window.onload = function() {
+        alert(@Model.FilterDay.Ticks)
+        var date = new Date(@Model.FilterDay.Ticks);
+        alert(date)
+        var currentDate = date.toISOString().substring(0,10);
+
+document.getElementById('date_chart').value = currentDate;
+
+        //var $datepicker = $('#date_chart');
+        //$datepicker.datepicker();
+        //$datepicker.datepicker('setDate', new Date());
+
+            //$("#date_chart").datepicker('setDate', new Date());
+            //alert("asdasd")
+        }
+</script>
+
+    @*============================== Char On Day ==============================*@
 <script type="text/javascript">
     // Set new default font family and font color to mimic Bootstrap's default styling
     Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
@@ -310,32 +322,33 @@
         cutoutPercentage: 80,
       },
     });
+
 </script>
 
-<script>
-        function submitWeek() {
-            var week = document.getElementById("week_chart_select").value
-            let dates = parseDates(week);
-            document.getElementById("week_chart_txt").value = JSON.stringify(dates); 
-            document.getElementById("form_week").submit();
-        }
+@*<script>
+    function submitWeek() {
+    var week = document.getElementById("week_chart_select").value
+    let dates = parseDates(week);
+    document.getElementById("week_chart_txt").value = JSON.stringify(dates);
+    document.getElementById("form_week").submit();
+    }
 
-        let parseDates = (inp) => {
-            let year = parseInt(inp.slice(0,4), 10);
-            let week = parseInt(inp.slice(6), 10) + 1;
+    let parseDates = (inp) => {
+    let year = parseInt(inp.slice(0,4), 10);
+    let week = parseInt(inp.slice(6), 10) + 1;
 
-            let day = (1 + (week - 1) * 7); // 1st of January + 7 days for each week
+    let day = (1 + (week - 1) * 7); // 1st of January + 7 days for each week
 
-            let dayOffset = new Date(year, 0, 1).getDay(); // we need to know at what day of the week the year start
+    let dayOffset = new Date(year, 0, 1).getDay(); // we need to know at what day of the week the year start
 
-            dayOffset--;  // depending on what day we want the week to start increment or decrement this value. This should make the week start on a monday
+    dayOffset--;  // depending on what day we want the week to start increment or decrement this value. This should make the week start on a monday
 
-            let days = [];
-            for (let i = 0; i < 7; i++) // do this 7 times, once for every day
-                days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
-            return days;
-        }
-</script>
+    let days = [];
+    for (let i = 0; i < 7; i++) // do this 7 times, once for every day
+    days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
+    return days;
+    }
+    </script>*@
 
 @*============================== Char On Month ==============================*@
 

@@ -26,7 +26,7 @@
                                 @Html.DisplayNameFor(model => model.Laboratory)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TestType)
+                                @Html.DisplayNameFor(model => model.TestTypeId)
                             </th>
                             @if (User.IsInRole("Techinician"))
                             {
@@ -42,7 +42,7 @@
                                 </th>
                             }
 
-                            <th></th>
+                            <th>Options</th>
                         </tr>
                     </thead>
                     <tbody>

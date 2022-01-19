@@ -335,10 +335,11 @@ namespace PWEBLabTestesOnline.Controllers
                 all = await getStats(),
                 FilterDay = DateTime.Now,
                 OnDay = await getStats(DateTime.Now),
-                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
-                FilterWeekDay1 = DateTime.Now,
-                FilterWeekDay2 = DateTime.Now.AddDays(7),
-                OnMonth = await getStats(FirstDayOfMonth(DateTime.Now), LastDayOfMonth(DateTime.Now))
+                OnWeek = await getStats(FirstDayOfWeek(DateTime.Now), LastDayOfWeek(DateTime.Now)),
+                FilterWeekDay1 = FirstDayOfWeek(DateTime.Now),
+                FilterWeekDay2 = LastDayOfWeek(DateTime.Now),
+                OnMonth = await getStats(FirstDayOfMonth(DateTime.Now), LastDayOfMonth(DateTime.Now)),
+                Month = DateTime.Now.Year + "-" + DateTime.Now.Month,
             };
 
             return View(stats);
@@ -348,67 +349,31 @@ namespace PWEBLabTestesOnline.Controllers
         [Authorize(Roles = ("Admin"))]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Statistics(DateTime Date)
+        public async Task<IActionResult> Statistics(DateTime Date, String Week, String Month)
         {
-            var stats = new StatisticsViewModel
-            {
-                all = await getStats(),
-                FilterDay = Date,
-                OnDay = await getStats(Date),
-                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
-                FilterWeekDay1 = DateTime.Now,
-                FilterWeekDay2 = DateTime.Now.AddDays(7),
-            };
+            var weekYear = int.Parse(Week.Substring(0, 4));
+            var weekNumber = int.Parse(Week.Substring(6));
+            var weekFirstDate = FirstDateOfWeekISO8601(weekYear, weekNumber);
 
-            return View(stats);
-        }
-
-        // POST: Schedules/Statistics
-        [Authorize(Roles = ("Admin"))]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StatisticsWeek(String Week)
-        {
-            var days = JsonSerializer.Deserialize<DateTime[]>(Week);
-
-            var stats = new StatisticsViewModel
-            {
-                all = await getStats(),
-                FilterDay = DateTime.Now,
-                OnDay = await getStats(DateTime.Now),
-                OnWeek = await getStats(days.First(), days.Last()),
-                FilterWeekDay1 = days.First(),
-                FilterWeekDay2 = days.Last(),
-            };
-
-            return View("Statistics", stats);
-        }
-
-        // POST: Schedules/Statistics
-        [Authorize(Roles = ("Admin"))]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StatisticsMonth(String Month)
-        {
             var firstDayOfMonth = new DateTime(int.Parse(Month.Substring(0, 4)), int.Parse(Month.Substring(5)), 1);
             var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
             var stats = new StatisticsViewModel
             {
                 all = await getStats(),
-                FilterDay = DateTime.Now,
-                OnDay = await getStats(DateTime.Now),
-                OnWeek = await getStats(DateTime.Now, DateTime.Now.AddDays(7)),
-                FilterWeekDay1 = DateTime.Now,
-                FilterWeekDay2 = DateTime.Now.AddDays(7),
+                FilterDay = Date,
+                OnDay = await getStats(Date),
+                OnWeek = await getStats(weekFirstDate, LastDayOfWeek(weekFirstDate)),
+                FilterWeekDay1 = weekFirstDate,
+                FilterWeekDay2 = LastDayOfWeek(weekFirstDate),
                 OnMonth = await getStats(firstDayOfMonth, lastDayOfMonth),
-                Month = Month
+                Month = Month,
             };
 
-            return View("Statistics", stats);
+            return View(stats);
         }
 
-
+        //============================================= UTILS ========================================
 
         private async Task<AllTests> getStats()
         {
@@ -447,7 +412,7 @@ namespace PWEBLabTestesOnline.Controllers
         private DateTime FirstDayOfWeek(DateTime dt)
         {
             var culture = System.Threading.Thread.CurrentThread.CurrentCulture;
-            var diff = dt.DayOfWeek - culture.DateTimeFormat.FirstDayOfWeek;
+            var diff = dt.DayOfWeek - culture.DateTimeFormat.FirstDayOfWeek - 1;
 
             if (diff < 0)
             {
@@ -457,10 +422,37 @@ namespace PWEBLabTestesOnline.Controllers
             return dt.AddDays(-diff).Date;
         }
 
-        private  DateTime LastDayOfWeek(DateTime dt) => FirstDayOfWeek(dt).AddDays(6);
+        private DateTime LastDayOfWeek(DateTime dt) => FirstDayOfWeek(dt).AddDays(6);
 
         private DateTime FirstDayOfMonth(DateTime dt) => new DateTime(dt.Year, dt.Month, 1);
 
         private DateTime LastDayOfMonth(DateTime dt) => FirstDayOfMonth(dt).AddMonths(1).AddDays(-1);
+
+        public static DateTime FirstDateOfWeekISO8601(int year, int weekOfYear)
+        {
+            DateTime jan1 = new DateTime(year, 1, 1);
+            int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
+
+            // Use first Thursday in January to get first week of the year as
+            // it will never be in Week 52/53
+            DateTime firstThursday = jan1.AddDays(daysOffset);
+            var cal = CultureInfo.CurrentCulture.Calendar;
+            int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+            var weekNum = weekOfYear;
+            // As we're adding days to a date in Week 1,
+            // we need to subtract 1 in order to get the right date for week #1
+            if (firstWeek == 1)
+            {
+                weekNum -= 1;
+            }
+
+            // Using the first Thursday as starting week ensures that we are starting in the right year
+            // then we add number of weeks multiplied with days
+            var result = firstThursday.AddDays(weekNum * 7);
+
+            // Subtract 3 days from Thursday to get Monday, which is the first weekday in ISO8601
+            return result.AddDays(-3);
+        }
     }
 }
