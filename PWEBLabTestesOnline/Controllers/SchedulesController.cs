@@ -339,7 +339,7 @@ namespace PWEBLabTestesOnline.Controllers
                 FilterWeekDay1 = FirstDayOfWeek(DateTime.Now),
                 FilterWeekDay2 = LastDayOfWeek(DateTime.Now),
                 OnMonth = await getStats(FirstDayOfMonth(DateTime.Now), LastDayOfMonth(DateTime.Now)),
-                Month = DateTime.Now.Year + "-" + DateTime.Now.Month,
+                Month = DateTime.Now,
             };
 
             return View(stats);
@@ -349,7 +349,7 @@ namespace PWEBLabTestesOnline.Controllers
         [Authorize(Roles = ("Admin"))]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Statistics(DateTime Date, String Week, String Month)
+        public async Task<IActionResult> Statistics(DateTime Date, string Week, string Month)
         {
             var weekYear = int.Parse(Week.Substring(0, 4));
             var weekNumber = int.Parse(Week.Substring(6));
@@ -367,7 +367,7 @@ namespace PWEBLabTestesOnline.Controllers
                 FilterWeekDay1 = weekFirstDate,
                 FilterWeekDay2 = LastDayOfWeek(weekFirstDate),
                 OnMonth = await getStats(firstDayOfMonth, lastDayOfMonth),
-                Month = Month,
+                Month = firstDayOfMonth,
             };
 
             return View(stats);
@@ -428,7 +428,7 @@ namespace PWEBLabTestesOnline.Controllers
 
         private DateTime LastDayOfMonth(DateTime dt) => FirstDayOfMonth(dt).AddMonths(1).AddDays(-1);
 
-        public static DateTime FirstDateOfWeekISO8601(int year, int weekOfYear)
+        private DateTime FirstDateOfWeekISO8601(int year, int weekOfYear)
         {
             DateTime jan1 = new DateTime(year, 1, 1);
             int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
@@ -453,6 +453,12 @@ namespace PWEBLabTestesOnline.Controllers
 
             // Subtract 3 days from Thursday to get Monday, which is the first weekday in ISO8601
             return result.AddDays(-3);
+        }
+
+        private string pad(string num, int size)
+        {
+            while (num.Length < size) num = "0" + num;
+            return num;
         }
     }
 }

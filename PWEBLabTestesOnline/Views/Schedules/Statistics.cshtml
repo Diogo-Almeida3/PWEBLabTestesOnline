@@ -151,7 +151,7 @@
                                 <label class="dropdown-item">@Model.OnWeek.TotalTests</label>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-header">New Week:</div>
-                                <input class="dropdown-item" name="Week" onchange="submitWeek()" type="Week" id="week_chart_select" />
+                                <input class="dropdown-item" name="Week" onchange="submit()" type="Week" id="week_chart_select" />
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Tests of @Model.Month</h6>
+                        <h6 class="m-0 font-weight-bold text-primary" id="month_text">Tests of month @Model.Month.Month/@Model.Month.Year</h6>
                         <div class="dropdown no-arrow">
                             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -229,21 +229,31 @@
 <script src="~/theme/vendor/chart.js/Chart.min.js"></script>
 
 <script>
-    window.onload = function() {
-        alert(@Model.FilterDay.Ticks)
-        var date = new Date(@Model.FilterDay.Ticks);
-        alert(date)
-        var currentDate = date.toISOString().substring(0,10);
+        window.onload = function() {
+            // Form Filter for Day
+            var date = new Date(@Model.FilterDay.Year,@Model.FilterDay.Month-1,@Model.FilterDay.Day); //TODO: Ver porque é que está a criar a data com o mes mal
+            var currentDate = date.toISOString().substring(0,10);
+            document.getElementById('date_chart').value = currentDate;
 
-document.getElementById('date_chart').value = currentDate;
+            // Form Filter for Week
+            var firstDayOfWeek = new Date(@Model.FilterWeekDay1.Year,@Model.FilterWeekDay1.Month-1,@Model.FilterWeekDay1.Day);
+            var oneJan = new Date(firstDayOfWeek.getFullYear(),0,1);
+            var numberOfDays = Math.floor((firstDayOfWeek - oneJan) / (24 * 60 * 60 * 1000));
+            var weekNum = Math.ceil(( firstDayOfWeek.getDay() + 1 + numberOfDays) / 7);
 
-        //var $datepicker = $('#date_chart');
-        //$datepicker.datepicker();
-        //$datepicker.datepicker('setDate', new Date());
+            var weekControl = document.getElementById("week_chart_select")
+            weekControl.value = firstDayOfWeek.getFullYear() + '-W' + pad(weekNum,2);
 
-            //$("#date_chart").datepicker('setDate', new Date());
-            //alert("asdasd")
-        }
+            // Form Filter for Month
+            var monthControl = document.getElementById("month_chart_select")
+            monthControl.value = @Model.Month.Year + "-" + pad(@Model.Month.Month,2)
+            }
+
+            function pad(num, size) {
+                num = num.toString();
+                while (num.length < size) num = "0" + num;
+                return num;
+            }
 </script>
 
     @*============================== Char On Day ==============================*@
@@ -324,31 +334,6 @@ document.getElementById('date_chart').value = currentDate;
     });
 
 </script>
-
-@*<script>
-    function submitWeek() {
-    var week = document.getElementById("week_chart_select").value
-    let dates = parseDates(week);
-    document.getElementById("week_chart_txt").value = JSON.stringify(dates);
-    document.getElementById("form_week").submit();
-    }
-
-    let parseDates = (inp) => {
-    let year = parseInt(inp.slice(0,4), 10);
-    let week = parseInt(inp.slice(6), 10) + 1;
-
-    let day = (1 + (week - 1) * 7); // 1st of January + 7 days for each week
-
-    let dayOffset = new Date(year, 0, 1).getDay(); // we need to know at what day of the week the year start
-
-    dayOffset--;  // depending on what day we want the week to start increment or decrement this value. This should make the week start on a monday
-
-    let days = [];
-    for (let i = 0; i < 7; i++) // do this 7 times, once for every day
-    days.push(new Date(year, 0, day - dayOffset + i)); // add a new Date object to the array with an offset of i days relative to the first day of the week
-    return days;
-    }
-    </script>*@
 
 @*============================== Char On Month ==============================*@
 
