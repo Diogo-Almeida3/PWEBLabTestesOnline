@@ -111,13 +111,20 @@ namespace PWEBLabTestesOnline.Controllers
                 if (DateTime.Now > schedules.AppointmentTime)
                     ModelState.AddModelError("AppointmentTime", "You must enter a schedule date that is greater than the current date and time");
 
-                if (schedules.AppointmentTime.TimeOfDay < vacancy.Opening.TimeOfDay || schedules.AppointmentTime.TimeOfDay > vacancy.Enclosure.TimeOfDay)
-                    ModelState.AddModelError("AppointmentTime", "It is not possible to schedule a test at this time");
+                try
+                {
+                    if (schedules.AppointmentTime.TimeOfDay < vacancy.Opening.TimeOfDay || schedules.AppointmentTime.TimeOfDay > vacancy.Enclosure.TimeOfDay)
+                        ModelState.AddModelError("AppointmentTime", "It is not possible to schedule a test at this time");
+                
 
-                var DailyLimit = await _context.Schedules.Where(s => s.AppointmentTime.Date == schedules.AppointmentTime.Date).CountAsync();
-                if (DailyLimit >= vacancy.DailyLimit)
-                    ModelState.AddModelError("DailyLimit", "There are no more vacancies for today");
-
+                    var DailyLimit = await _context.Schedules.Where(s => s.AppointmentTime.Date == schedules.AppointmentTime.Date).CountAsync();
+                    if (DailyLimit >= vacancy.DailyLimit)
+                        ModelState.AddModelError("DailyLimit", "There are no more vacancies for today");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("AppointmentTime", "This test is not available");
+                }
                 if (ModelState.IsValid)
                 {
                     schedules.CurrentChecklist = vacancy.CurrentChecklist;
