@@ -98,7 +98,7 @@ namespace PWEBLabTestesOnline.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId,Opening,Enclosure")] Laboratories laboratories)
+        public async Task<IActionResult> Create([Bind("LaboratoriesId,LaboratoriesName,Location,PhoneNumber,ManagerId,Manager,Opening,Enclosure")] Laboratories laboratories)
         {
             if (User.IsInRole("Admin"))
             {
@@ -131,12 +131,13 @@ namespace PWEBLabTestesOnline.Controllers
                     ModelState.AddModelError("Opening", "The opening time is longer than the closing date");
                 }
 
-                if (ModelState.IsValid)
+                if (ModelState.ErrorCount < 2 )
                 {
                     _context.Add(laboratories);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
+
             }
             return View(laboratories);
         }

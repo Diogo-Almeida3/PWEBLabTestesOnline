@@ -93,7 +93,7 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl,int id)
         {
-            if (User.IsInRole("Manager"))
+            if (User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 Roles = new List<SelectListItem>
                 {
@@ -132,7 +132,7 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
 
-                    if (User.IsInRole("Manager"))
+                    if (User.IsInRole("Manager") || User.IsInRole("Admin"))
                     {
                         var laboratories = _context.Laboratories.Include(m => m.Techinicians).First(lab =>lab.LaboratoriesId == Int32.Parse(Input.RoleName));
                                         
@@ -178,7 +178,7 @@ namespace PWEBLabTestesOnline.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                if (User.IsInRole("Manager"))
+                if (User.IsInRole("Manager") || User.IsInRole("Admin"))
                 {
                     Roles = new List<SelectListItem>
                 {
